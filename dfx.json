@@ -8,50 +8,50 @@
       "candid": "canisters/providers/providers.did",
       "wasm": ".azle/providers/providers.wasm.gz",
       "declarations": {
-        "output": "test/dfx_generated/providers",
+        "output": "dfx_generated/providers",
 
         "node_compatibility": true
       }
     },
     "will": {
-        "type": "custom",
-        "build": "npx azle will ",
-        "root": "canisters/will",
-        "ts": "canisters/will/will.ts",
-        "candid": "canisters/will/will.did",
-        "wasm": ".azle/will/will.wasm.gz",
-        "declarations": {
-          "output": "test/dfx_generated/will",
-  
-          "node_compatibility": true
-        }
-      },
+      "type": "custom",
+      "build": "npx azle will ",
+      "root": "canisters/will",
+      "ts": "canisters/will/will.ts",
+      "candid": "canisters/will/will.did",
+      "wasm": ".azle/will/will.wasm.gz",
+      "declarations": {
+        "output": "dfx_generated/will",
 
-      "bitcoin": {
-        "type": "custom",
-        "build": "npx azle bitcoin ",
-        "root": "canisters/bitcoin",
-        "ts": "canisters/bitcoin/bitcoin.ts",
-        "candid": "canisters/bitcoin/bitcoin.did",
-        "wasm": ".azle/bitcoin/bitcoin.wasm.gz",
-        "declarations": {
-          "output": "test/dfx_generated/bitcoin",
-  
-          "node_compatibility": true
-        }
-      },
-      "icrc": {
-        "type": "custom",
-        "build": "npx azle icrc ",
-        "root": "canisters/icrc",
-        "ts": "canisters/icrc/icrc.ts",
-        "candid": "canisters/icrc/icrc.did",
-        "wasm": ".azle/icrc/icrc.wasm.gz",
-        "declarations": {
-          "output": "test/dfx_generated/icrc",
-  
-          "node_compatibility": true
-        }
+        "node_compatibility": true
       }
+    },
+
+    "bitcoin": {
+      "type": "custom",
+      "build": "npx azle bitcoin ",
+      "root": "canisters/bitcoin",
+      "ts": "canisters/bitcoin/bitcoin.ts",
+      "candid": "canisters/bitcoin/bitcoin.did",
+      "wasm": ".azle/bitcoin/bitcoin.wasm.gz",
+      "declarations": {
+        "output": "dfx_generated/bitcoin",
+
+        "node_compatibility": true
+      }
+    },
+    "icrc": {
+      "type": "custom",
+      "build": "npx azle icrc ",
+      "root": "canisters/icrc",
+      "ts": "canisters/icrc/icrc.ts",
+      "candid": "canisters/icrc/icrc.did",
+      "wasm": ".azle/icrc/icrc.wasm.gz",
+      "declarations": {
+        "output": "dfx_generated/icrc",
+
+        "node_compatibility": true
+      }
+    }
   }
 }
