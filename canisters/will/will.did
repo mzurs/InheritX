@@ -1,0 +1,29 @@
+type AddUserDetails = variant { userExists : bool; success : bool };
+type GetUserDetails = variant {
+  userDetails : UserDetails;
+  userNotExists : bool;
+};
+type UpdateUserDetails = variant { success : bool; userNotExists : bool };
+type UserDetails = record {
+  sex : text;
+  "principal" : principal;
+  birthDate : text;
+  birthLocationCode : text;
+  legalName : text;
+  isUserDied : bool;
+  lastName : text;
+  firstName : text;
+};
+type userDetailsArgs = record {
+  sex : text;
+  birthDate : text;
+  birthLocationCode : text;
+  legalName : text;
+  lastName : text;
+  firstName : text;
+};
+service : () -> {
+  add_user_details : (userDetailsArgs) -> (AddUserDetails);
+  get_user_details : () -> (GetUserDetails) query;
+  update_user_details : (userDetailsArgs) -> (UpdateUserDetails);
+}
