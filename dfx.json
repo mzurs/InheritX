@@ -52,6 +52,11 @@
 
         "node_compatibility": true
       }
+    },
+    "ckbtc": {
+      "type": "custom",
+      "candid": "ckbtc/ledger.did",
+      "wasm": "ckbtc/ledger.wasm.gz"
     }
   }
 }
