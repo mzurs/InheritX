@@ -9,7 +9,6 @@
       "wasm": ".azle/providers/providers.wasm.gz",
       "declarations": {
         "output": "dfx_generated/providers",
-
         "node_compatibility": true
       }
     },
@@ -22,7 +21,6 @@
       "wasm": ".azle/will/will.wasm.gz",
       "declarations": {
         "output": "dfx_generated/will",
-
         "node_compatibility": true
       }
     },
@@ -36,7 +34,6 @@
       "wasm": ".azle/bitcoin/bitcoin.wasm.gz",
       "declarations": {
         "output": "dfx_generated/bitcoin",
-
         "node_compatibility": true
       }
     },
@@ -49,14 +46,13 @@
       "wasm": ".azle/icrc/icrc.wasm.gz",
       "declarations": {
         "output": "dfx_generated/icrc",
-
         "node_compatibility": true
       }
     },
-    "ckbtc": {
+    "ckbtc_ledger": {
       "type": "custom",
-      "candid": "ckbtc/ledger.did",
-      "wasm": "ckbtc/ledger.wasm.gz"
+      "candid": "ckbtc/ckbtc_ledger.did",
+      "wasm": "ckbtc/ckbtc_ledger.wasm.gz"
     }
   }
 }
