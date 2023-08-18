@@ -1,4 +1,4 @@
-import { Principal, Record, Variant, nat32 } from "azle";
+import { Principal, Record, Variant, blob, nat32 } from "azle";
 
 // User Details
 export type UserDetails = Record<{
@@ -19,26 +19,6 @@ export type userDetailsArgs = Record<{
   birthDate: string;
   birthLocationCode: string;
 }>;
-//List of supported ICRC tokens
-type ICRC = Variant<{
-  ckBTC: null;
-  CHAT: null;
-}>;
-
-type will_type = Variant<{
-  ICP: null;
-  ICRC: ICRC;
-  BTC: null;
-}>;
-
-//stable Memory Type for Will
-export type Will = Record<{
-  identifier: string;
-  type: will_type;
-  owner: Principal;
-  hier: Principal;
-  value: nat32;
-}>;
 
 // Return Type of AddUserDetail
 export type AddUserDetails = Variant<{
@@ -57,4 +37,42 @@ export type GetUserDetails = Variant<{
 export type UpdateUserDetails = Variant<{
   userNotExists: boolean;
   success: boolean;
+}>;
+
+//------------------------------------------------------------------------------------------------------------------------//
+
+//List of supported ICRC tokens
+export const ICRCs = ["ckBTC", "CHAT"];
+
+// Type supported to create a will
+export const will_types = ["ICRC", "BTC", "ICP"];
+
+//stable Memory Type for Will
+export type Will = Record<{
+  identifier: string;
+  type: string;
+  owner: Principal;
+  hiers: Principal;
+  value: nat32;
+  isClaimed: boolean;
+}>;
+
+export type CreateWill = Variant<{
+  userNotExists: boolean;
+  success: boolean;
+  willTypeNotSupported: string;
+}>;
+
+export type CreateWillArgs = Record<{
+  identifier: string;
+  hiers: Principal;
+  will_type: string;
+  amount: nat32;
+}>;
+
+export type DeleteWill = Variant<{
+  userNotExists: boolean;
+  success: boolean;
+  willNotExists: boolean;
+  errorMessage: string;
 }>;
