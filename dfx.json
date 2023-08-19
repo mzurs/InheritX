@@ -51,8 +51,8 @@
     },
     "ckbtc_ledger": {
       "type": "custom",
-      "candid": "ckbtc/ckbtc_ledger.did",
-      "wasm": "ckbtc/ckbtc_ledger.wasm.gz"
+      "candid": "canisters/icrc/ledgers/ckbtc/ckbtc_ledger.did",
+      "wasm": "canisters/icrc/ledgers/ckbtc/ckbtc_ledger.wasm.gz"
     }
   }
 }
