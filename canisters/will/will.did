@@ -2,7 +2,7 @@ type AddUserDetails = variant { userExists : bool; success : bool };
 type CreateWillArgs = record {
   hiers : principal;
   will_type : text;
-  identifier : text;
+  identifier : nat32;
   amount : nat32;
 };
 type DeleteWill = variant {
@@ -41,10 +41,10 @@ type userDetailsArgs = record {
 };
 service : () -> {
   add_user_details : (userDetailsArgs) -> (AddUserDetails);
-  caller : (nat8) -> (text) query;
-  delete_will : (text) -> (DeleteWill);
+  delete_will : (nat32) -> (DeleteWill);
   get_user_details : () -> (GetUserDetails) query;
+  get_will_canister_id : () -> (principal) query;
   icrc_create_will : (CreateWillArgs) -> (ManualReply);
-  request_random_will_identifier : () -> (text);
+  request_random_will_identifier : () -> (nat32);
   update_user_details : (userDetailsArgs) -> (UpdateUserDetails);
 }

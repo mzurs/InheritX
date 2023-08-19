@@ -49,7 +49,7 @@ export const will_types = ["ICRC", "BTC", "ICP"];
 
 //stable Memory Type for Will
 export type Will = Record<{
-  identifier: string;
+  identifier: nat32;
   type: string;
   owner: Principal;
   hiers: Principal;
@@ -64,7 +64,7 @@ export type CreateWill = Variant<{
 }>;
 
 export type CreateWillArgs = Record<{
-  identifier: string;
+  identifier: nat32;
   hiers: Principal;
   will_type: string;
   amount: nat32;

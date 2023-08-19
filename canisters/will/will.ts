@@ -5,10 +5,9 @@ import {
   Result,
   empty,
   Variant,
-  nat64,
+  nat32,
   $query,
   Record,
-  nat32,
   StableBTreeMap,
   Principal,
   ic,
@@ -36,18 +35,17 @@ import {
 let users = new StableBTreeMap<Principal, UserDetails>(1, 38, 500_000);
 
 // Store digital will inside StableMemory with unique will_identifier
-let wills = new StableBTreeMap<string, Will>(2, 38, 500_000);
-
+let wills = new StableBTreeMap<nat32, Will>(2, 38, 500_000);
 
 // owner principal mapping to will owner ==> will_identifer
-let ownerMappingToWillIdentifier = new StableBTreeMap<Principal, Vec<string>>(
+let ownerMappingToWillIdentifier = new StableBTreeMap<Principal, Vec<nat32>>(
   3,
   38,
   500_000
 );
 
 // hiers principal mapping to will hiers ==> will_identifer
-let hiersMappingToWillIdentifier = new StableBTreeMap<Principal, Vec<string>>(
+let hiersMappingToWillIdentifier = new StableBTreeMap<Principal, Vec<nat32>>(
   4,
   38,
   500_000
@@ -168,26 +166,30 @@ export function update_user_details(
 
 // request random will identifier to create a uniquw will
 $update;
-export async function request_random_will_identifier(): Promise<string> {
-  const MULTIPLY_BY_10s = 10 ** 16;
+export async function request_random_will_identifier(): Promise<nat32> {
+  const MULTIPLY_BY_10s = 100_000_000;
   //   const randomnessResult = await managementCanister.raw_rand().call();
-  return String(
-    parseInt(
-      String(Math.random() * MULTIPLY_BY_10s + Math.random() * MULTIPLY_BY_10s)
+  return Number(
+    String(
+      parseInt(
+        String(
+          Math.random() * MULTIPLY_BY_10s + Math.random() * MULTIPLY_BY_10s
+        )
+      )
     )
   );
 }
 
 $query;
-export function caller(arg: nat8): string {
-  return ic.caller().toString();
+export function get_will_canister_id(): Principal {
+  return ic.id();
 }
 
 // add will identifier to owners and hiers mappings
 function add_identifier_to_mapping(
   owner: Principal,
   hiers: Principal,
-  identifier: string
+  identifier: nat32
 ): void {
   if (ownerMappingToWillIdentifier.isEmpty()) {
     ownerMappingToWillIdentifier.insert(owner, [identifier]);
@@ -215,7 +217,7 @@ function add_identifier_to_mapping(
 function remove_identifier_from_mapping(
   owner: Principal,
   hiers: Principal,
-  identifier: string
+  identifier: nat32
 ): void {
   const ownerIdentifiers = ownerMappingToWillIdentifier.get(owner);
   match(ownerIdentifiers, {
@@ -292,7 +294,7 @@ export async function icrc_create_will(
 
 //  delete a will
 $update;
-export function delete_will(identifier: string): DeleteWill {
+export function delete_will(identifier: nat32): DeleteWill {
   //check user existence
   if (!is_user_exists(ic.caller())) {
     return {
