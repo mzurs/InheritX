@@ -1,4 +1,4 @@
-!/bin/bash
+# !/bin/bash
 
 file_name="ledger.wasm"
 
@@ -12,6 +12,7 @@ else
     export IC_VERSION=3bcccef07408921fe849c92dd2437adc157ef9c3
     curl -o ckbtc_ledger.wasm.gz "https://download.dfinity.systems/ic/$IC_VERSION/canisters/ic-icrc1-ledger.wasm.gz"
     curl -o ckbtc_ledger.did "https://raw.githubusercontent.com/dfinity/ic/$IC_VERSION/rs/rosetta-api/icrc1/ledger/ledger.did"
+     gunzip ckbtc_ledger.wasm.gz
 fi
 
 echo "Downloading latest IC Version"
@@ -19,9 +20,14 @@ echo "Downloading latest IC Version"
 echo "Adding to ckBTC Dir...."
 
 # cp ckbtc_ledger.wasm ckbtc/
-cp ckbtc_ledger.did ckbtc/
-cp ckbtc_ledger.wasm.gz ckbtc/
+cp ckbtc_ledger.did canisters/icrc/ledgers/ckbtc/
+
+cp ckbtc_ledger.wasm.gz  canisters/icrc/ledgers/ckbtc/
+
+cp ckbtc_ledger.wasm canisters/icrc/ledgers/ckbtc/
 
 rm ckbtc_ledger.did
 # rm ckbtc_ledger.wasm
 rm ckbtc_ledger.wasm.gz
+
+rm ckbtc_ledger.wasm
