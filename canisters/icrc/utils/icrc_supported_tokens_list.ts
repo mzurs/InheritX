@@ -8,10 +8,6 @@ export const MAINNET_CHAT_PRINCIPAL: string = "2ouva-viaaa-aaaaq-aaamq-cai";
 
 //----------Local Ledger IDs
 
-<<<<<<< HEAD
 export const LOCAL_ICP_PRINCIPAL: string = "";
-=======
-export const LOCAL_ICP_PRINCIPAL: string = "ryjl3-tyaaa-aaaaa-aaaba-cai";
->>>>>>> dc2cf0b (reinitialze  in local)
 export const LOCAL_CKBTC_PRINCIPAL: string = "b77ix-eeaaa-aaaaa-qaada-cai";
 export const LOCAL_CHAT_PRINCIPAL: string = "";
