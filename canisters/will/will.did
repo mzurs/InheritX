@@ -1,0 +1,50 @@
+type AddUserDetails = variant { userExists : bool; success : bool };
+type CreateWillArgs = record {
+  hiers : principal;
+  will_type : text;
+  identifier : nat32;
+  amount : nat32;
+};
+type DeleteWill = variant {
+  errorMessage : text;
+  success : bool;
+  willNotExists : bool;
+  userNotExists : bool;
+};
+type GetUserDetails = variant {
+  userDetails : UserDetails;
+  userNotExists : bool;
+};
+type ManualReply = variant {
+  success : bool;
+  userNotExists : bool;
+  willTypeNotSupported : text;
+};
+type UpdateUserDetails = variant { success : bool; userNotExists : bool };
+type UserDetails = record {
+  sex : text;
+  "principal" : principal;
+  birthDate : text;
+  birthLocationCode : text;
+  legalName : text;
+  isUserDied : bool;
+  lastName : text;
+  firstName : text;
+};
+type userDetailsArgs = record {
+  sex : text;
+  birthDate : text;
+  birthLocationCode : text;
+  legalName : text;
+  lastName : text;
+  firstName : text;
+};
+service : () -> {
+  add_user_details : (userDetailsArgs) -> (AddUserDetails);
+  delete_will : (nat32) -> (DeleteWill);
+  get_user_details : () -> (GetUserDetails) query;
+  get_will_canister_id : () -> (principal) query;
+  icrc_create_will : (CreateWillArgs) -> (ManualReply);
+  request_random_will_identifier : () -> (nat32);
+  update_user_details : (userDetailsArgs) -> (UpdateUserDetails);
+}

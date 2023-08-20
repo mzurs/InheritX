@@ -1,0 +1,21 @@
+type DeathDetails = record {
+  deathDate : text;
+  birthDate : text;
+  birthLocationCode : float64;
+  deathLocationCode : float64;
+  lastName : text;
+  firstName : text;
+};
+type HttpHeader = record { value : text; name : text };
+type HttpResponse = record {
+  status : nat;
+  body : vec nat8;
+  headers : vec HttpHeader;
+};
+type HttpTransformArgs = record { context : vec nat8; response : HttpResponse };
+type ManualReply = variant { err : text; res : bool };
+service : () -> {
+  check_user_dead_details : (DeathDetails) -> (ManualReply);
+  get_matchid_url : () -> (text);
+  xkcdTransform : (HttpTransformArgs) -> (HttpResponse) query;
+}
