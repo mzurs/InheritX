@@ -1,9 +1,16 @@
 type DeathDetails = record {
+<<<<<<< HEAD
   sex : text;
   deathDate : text;
   birthDate : text;
   birthLocationCode : text;
   legalName : text;
+=======
+  deathDate : text;
+  birthDate : text;
+  birthLocationCode : float64;
+  deathLocationCode : float64;
+>>>>>>> dc2cf0b (reinitialze  in local)
   lastName : text;
   firstName : text;
 };
