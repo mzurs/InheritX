@@ -5,15 +5,10 @@ import {
   $preUpgrade,
   $postUpgrade,
   StableBTreeMap,
-  nat,
-  nat32,
   match,
-  Result,
   Opt,
-  Variant,
   ic,
-  Record,
-  blob,
+  Principal,
 } from "azle";
 
 import {
@@ -22,18 +17,20 @@ import {
   managementCanister,
 } from "azle/canisters/management";
 import decodeUtf8 from "decode-utf8";
+import {
+  CheckTestatorDetailsWithID,
+  Person,
+  TestatorDetails,
+} from "./utils/types";
+import { MATCHID_URL, check_first_names } from "./utils/utils";
 
-const MATCHID_URL = "https://deces.matchid.io/deces/api/v1/";
+// Stable Memory to cache Testator Details if claim death details verified
 
-type DeathDetails = Record<{
-  firstName: string;
-  lastName: string;
-  legalName: string;
-  sex: string;
-  birthDate: string;
-  deathDate: string;
-  birthLocationCode: string;
-}>;
+const testatorCache = new StableBTreeMap<Principal, boolean>(1, 38, 100);
+
+//=============================================CANISTER LIFECYCLE=========================================================
+
+// Runs on first deployment
 $init;
 export function init(): void {
   console.log("This runs once when the canister is first initialized");
@@ -50,26 +47,44 @@ export function post_upgrade(): void {
 }
 $update;
 export function get_matchid_url(): string {
-  return process.env.MATCHID_URL!;
+  return MATCHID_URL!;
 }
 
-export async function is_user_exists_in_response(
-  response_body: blob
-): Promise<boolean> {
-  const parseData = JSON.parse(decodeUtf8(Uint8Array.from(response_body)));
-  if (parseData.response.total == 1) {
-    return true;
-  } else {
-    return false;
-  }
+// Function to Whether Testator Already Died
+
+$query;
+export function isTestatorDied(testatorPrincipal: Principal): boolean {
+  return match(testatorCache.get(testatorPrincipal), {
+    Some: (testator) => testator,
+    None: () => false,
+  });
 }
 
-async function fetch_death_records(_url: string): Promise<HttpResponse> {
-  // const url =
-  //   "https://deces.matchid.io/deces/api/v1/search?firstName=Elijah&legalName=JULIAN%20Elie&sex=M&birthDate=23%2F12%2F1927&deathDate=16%2F02%2F2023&lastName=Julien";
-  const httpResult = await managementCanister
+// Function to verify Testator Details With The Details Retrieve From base64_Identifier
+
+$update;
+export async function check_testator_details_with_id(
+  testatorPrincipal: Principal,
+  base64Id: string,
+  testatorDetails: TestatorDetails
+): Promise<CheckTestatorDetailsWithID> {
+  //For uint function testing
+
+  // const testatorDetails: TestatorDetails = {
+  //   firstNames: ["Concetina"],
+  //   lastName: "Cosentino",
+  //   sex: "F",
+  //   birthDate: "19330807",
+  //   birthLocationCode: "01202",
+  //   deathDate: "20230130",
+  //   deathLocationCode: "01004",
+  // };
+
+  const URL = MATCHID_URL + "id/" + base64Id;
+
+  const response = await managementCanister
     .http_request({
-      url: _url,
+      url: URL,
       max_response_bytes: Opt.Some(2_000n),
       method: {
         get: null,
@@ -77,51 +92,90 @@ async function fetch_death_records(_url: string): Promise<HttpResponse> {
       headers: [],
       body: Opt.None,
       transform: Opt.Some({
-        function: [ic.id(), "xkcdTransform"],
+        function: [ic.id(), "testator_details_transform"],
         context: Uint8Array.from([]),
       }),
     })
-    .cycles(50_000_000n)
+    .cycles(100_000_000n)
     .call();
 
-  return match(httpResult, {
-    Ok: (httpResponse) => httpResponse,
+  const unparsedResponse = match(response, {
+    Ok: (unparsedResponse) => unparsedResponse,
     Err: (err) => ic.trap(err),
   });
-}
-$update;
-export async function check_user_dead_details(
-  details: DeathDetails
-): Promise<Variant<{ res: boolean; err: string }>> {
-  const url =
-    MATCHID_URL +
-    "search?" +
-    "firstName=" +
-    details.firstName +
-    "&lastName=" +
-    details.lastName +
-    "&birthDate=" +
-    details.birthDate +
-    "&birthLocationCode=" +
-    details.birthLocationCode +
-    "&sex=" +
-    details.sex +
-    "&legalName=" +
-    details.legalName +
-    "&deathDate=" +
-    details.deathDate;
 
-  const response: HttpResponse = await fetch_death_records(url);
+  const parsedResponseBody = JSON.parse(
+    decodeUtf8(Uint8Array.from(unparsedResponse.body))
+  );
 
-  if (response.status == 200n) {
-    const res = await is_user_exists_in_response(response.body);
-    return { res };
+  const total = parsedResponseBody.response.total;
+
+  if (total == 0 || total > 1) {
+    return {
+      result: false,
+      message: Opt.Some(`Testator Details Not Found ${total}`),
+    };
+  } else {
+    if (total === 1) {
+      const responseFirstNames =
+        parsedResponseBody.response.persons[0].name.first;
+
+      const responseLastName = parsedResponseBody.response.persons[0].name.last;
+
+      const responseSex = parsedResponseBody.response.persons[0].sex;
+
+      const responseBirthDate =
+        parsedResponseBody.response.persons[0].birth.date;
+
+      const responseBirthLocationCode =
+        parsedResponseBody.response.persons[0].birth.location.code;
+
+      const responseDeathDate =
+        parsedResponseBody.response.persons[0].death.date;
+
+      const responseDeathLocationCode =
+        parsedResponseBody.response.persons[0].death.location.code;
+
+      if (
+        (check_first_names(testatorDetails.firstNames, responseFirstNames) &&
+          responseLastName == testatorDetails.lastName &&
+          responseBirthDate == testatorDetails.birthDate &&
+          responseBirthLocationCode == testatorDetails.birthLocationCode,
+        responseDeathDate == testatorDetails.deathDate &&
+          responseDeathLocationCode == testatorDetails.deathLocationCode &&
+          responseSex == testatorDetails.sex)
+      ) {
+        testatorCache.insert(testatorPrincipal, true);
+
+        return {
+          result: true,
+          message: Opt.Some(
+            "Testator Details Successfully Verified from MatchID Database"
+          ),
+        };
+      } else {
+        return {
+          result: false,
+          message: Opt.Some(
+            ` "Testator Details Not Verified from MatchID Database"`
+          ),
+        };
+      }
+    } else {
+      return {
+        result: false,
+        message: Opt.Some(`Testator Number should be 1`),
+      };
+    }
   }
-  return { err: JSON.stringify(response.body) };
 }
+
+//================================ HTTPs Outcalls Transformer ================================================
 
 $query;
-export function xkcdTransform(args: HttpTransformArgs): HttpResponse {
+export function testator_details_transform(
+  args: HttpTransformArgs
+): HttpResponse {
   return {
     ...args.response,
     headers: [],
