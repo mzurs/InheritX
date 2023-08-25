@@ -1,19 +1,26 @@
 type AddUserDetails = variant { userExists : bool; success : bool };
-type CreateWillArgs = record {
-  hiers : principal;
-  will_type : text;
-  identifier : nat32;
-  amount : nat32;
-};
 type DeleteWill = variant {
   errorMessage : text;
   success : bool;
   willNotExists : bool;
   userNotExists : bool;
 };
+type GetHeirWills = variant { wills : vec Will; noWillsExists : bool };
+type GetTestatorWills = variant {
+  userNotExists : bool;
+  wills : vec Will;
+  noWillsExists : bool;
+};
 type GetUserDetails = variant {
   userDetails : UserDetails;
   userNotExists : bool;
+};
+type ICRCCreateWillArgs = record {
+  heirs : principal;
+  willName : text;
+  will_type : text;
+  identifier : nat32;
+  amount : nat32;
 };
 type ManualReply = variant {
   success : bool;
@@ -26,25 +33,36 @@ type UserDetails = record {
   "principal" : principal;
   birthDate : text;
   birthLocationCode : text;
-  legalName : text;
-  isUserDied : bool;
+  firstNames : vec text;
   lastName : text;
-  firstName : text;
+};
+type Will = record {
+  heirs : principal;
+  value : nat32;
+  willName : text;
+  timeStamp : nat64;
+  will_type : text;
+  testator : principal;
+  isClaimed : bool;
+  identifier : nat32;
 };
 type userDetailsArgs = record {
   sex : text;
   birthDate : text;
   birthLocationCode : text;
-  legalName : text;
+  firstNames : vec text;
   lastName : text;
-  firstName : text;
 };
 service : () -> {
   add_user_details : (userDetailsArgs) -> (AddUserDetails);
-  delete_will : (nat32) -> (DeleteWill);
+  get_all_identifiers : () -> (vec record { nat32; principal }) query;
+  get_all_wills : () -> (vec record { nat32; Will }) query;
   get_user_details : () -> (GetUserDetails) query;
   get_will_canister_id : () -> (principal) query;
-  icrc_create_will : (CreateWillArgs) -> (ManualReply);
+  get_wills_for_heir : () -> (GetHeirWills) query;
+  get_wills_for_testator : () -> (GetTestatorWills) query;
+  icrc_create_will : (ICRCCreateWillArgs) -> (ManualReply);
+  icrc_delete_will : (nat32) -> (DeleteWill);
   request_random_will_identifier : () -> (nat32);
   update_user_details : (userDetailsArgs) -> (UpdateUserDetails);
 }
