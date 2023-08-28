@@ -9,7 +9,7 @@
 #     exit 1
 # fi
 
-bash scripts/dev/icp/icp.sh
+# bash scripts/dev/icp/icp.sh
 
 bash scripts/dev/ckbtc/ckbtc.sh
 

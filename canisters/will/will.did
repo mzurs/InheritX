@@ -1,10 +1,5 @@
 type AddUserDetails = variant { userExists : bool; success : bool };
-type DeleteWill = variant {
-  errorMessage : text;
-  success : bool;
-  willNotExists : bool;
-  userNotExists : bool;
-};
+type CreateWillArgs = variant { icrc : ICRCCreateWillArgs };
 type GetHeirWills = variant { wills : vec Will; noWillsExists : bool };
 type GetTestatorWills = variant {
   userNotExists : bool;
@@ -15,17 +10,61 @@ type GetUserDetails = variant {
   userDetails : UserDetails;
   userNotExists : bool;
 };
+type ICRC1TransferError = variant {
+  GenericError : _InlineICRC1TransferErrorGenericError;
+  TemporarilyUnavailable;
+  BadBurn : _InlineICRC1TransferErrorBadBurn;
+  Duplicate : _InlineICRC1TransferErrorDuplicate;
+  BadFee : _InlineICRC1TransferErrorBadFee;
+  CreatedInFuture : _InlineICRC1TransferErrorCreatedInFuture;
+  TooOld;
+  InsufficientFunds : _InlineICRC1TransferErrorInsufficientFunds;
+};
+type ICRCClaimWill = variant {
+  result : ICRCICPTRANSFER;
+  isClaimed : bool;
+  claimError : text;
+  tokenTickerNotSupported : bool;
+};
+type ICRCCreateWill = variant {
+  identifierUsed : bool;
+  tokenTickerNotSupported : text;
+  success : bool;
+  userNotExists : bool;
+};
 type ICRCCreateWillArgs = record {
   heirs : principal;
   willName : text;
-  will_type : text;
+  tokenTicker : text;
   identifier : nat32;
   amount : nat32;
 };
+type ICRCDeleteWill = variant { errorMessage : text; success : bool };
+type ICRCICPTRANSFER = variant {
+  Ok : nat;
+  Err : ICRC1TransferError;
+  message : text;
+  unAuthorized : bool;
+};
 type ManualReply = variant {
-  success : bool;
+  icrc : ICRCClaimWill;
+  claimError : bool;
+  willNotExists : bool;
+  unAuthorized : bool;
+  willTypeNotSupported : bool;
+};
+type ManualReply_1 = variant {
+  icrc : ICRCCreateWill;
   userNotExists : bool;
-  willTypeNotSupported : text;
+  willTypeNotSupported : bool;
+};
+type ManualReply_2 = variant {
+  identifierUsed : bool;
+  icrc : ICRCDeleteWill;
+  willNotExists : bool;
+  userNotExists : bool;
+  unAuthorized : bool;
+  willTypeNotSupported : bool;
 };
 type UpdateUserDetails = variant { success : bool; userNotExists : bool };
 type UserDetails = record {
@@ -41,11 +80,20 @@ type Will = record {
   value : nat32;
   willName : text;
   timeStamp : nat64;
-  will_type : text;
   testator : principal;
   isClaimed : bool;
+  tokenTicker : text;
   identifier : nat32;
 };
+type _InlineICRC1TransferErrorBadBurn = record { min_burn_amount : nat };
+type _InlineICRC1TransferErrorBadFee = record { expected_fee : nat };
+type _InlineICRC1TransferErrorCreatedInFuture = record { ledger_time : nat64 };
+type _InlineICRC1TransferErrorDuplicate = record { duplicate_of : nat };
+type _InlineICRC1TransferErrorGenericError = record {
+  message : text;
+  error_code : nat;
+};
+type _InlineICRC1TransferErrorInsufficientFunds = record { balance : nat };
 type userDetailsArgs = record {
   sex : text;
   birthDate : text;
@@ -55,14 +103,15 @@ type userDetailsArgs = record {
 };
 service : () -> {
   add_user_details : (userDetailsArgs) -> (AddUserDetails);
+  claim_will : (nat32, text) -> (ManualReply);
+  create_will : (CreateWillArgs, text) -> (ManualReply_1);
+  delete_will : (nat32, text) -> (ManualReply_2);
   get_all_identifiers : () -> (vec record { nat32; principal }) query;
   get_all_wills : () -> (vec record { nat32; Will }) query;
   get_user_details : () -> (GetUserDetails) query;
   get_will_canister_id : () -> (principal) query;
   get_wills_for_heir : () -> (GetHeirWills) query;
   get_wills_for_testator : () -> (GetTestatorWills) query;
-  icrc_create_will : (ICRCCreateWillArgs) -> (ManualReply);
-  icrc_delete_will : (nat32) -> (DeleteWill);
   request_random_will_identifier : () -> (nat32);
   update_user_details : (userDetailsArgs) -> (UpdateUserDetails);
 }

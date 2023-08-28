@@ -1,0 +1,39 @@
+type ICRC1TransferError = variant {
+  GenericError : _InlineICRC1TransferErrorGenericError;
+  TemporarilyUnavailable;
+  BadBurn : _InlineICRC1TransferErrorBadBurn;
+  Duplicate : _InlineICRC1TransferErrorDuplicate;
+  BadFee : _InlineICRC1TransferErrorBadFee;
+  CreatedInFuture : _InlineICRC1TransferErrorCreatedInFuture;
+  TooOld;
+  InsufficientFunds : _InlineICRC1TransferErrorInsufficientFunds;
+};
+type ManualReply = variant { Ok : nat; Err : text };
+type ManualReply_1 = variant {
+  Ok : nat;
+  Err : ICRC1TransferError;
+  message : text;
+  unAuthorized : bool;
+};
+type _InlineICRC1TransferErrorBadBurn = record { min_burn_amount : nat };
+type _InlineICRC1TransferErrorBadFee = record { expected_fee : nat };
+type _InlineICRC1TransferErrorCreatedInFuture = record { ledger_time : nat64 };
+type _InlineICRC1TransferErrorDuplicate = record { duplicate_of : nat };
+type _InlineICRC1TransferErrorGenericError = record {
+  message : text;
+  error_code : nat;
+};
+type _InlineICRC1TransferErrorInsufficientFunds = record { balance : nat };
+service : () -> {
+  binary_address_from_principal : (principal, nat32) -> (vec nat8) query;
+  get_canister_hex_subaccount_from_identifier : (nat32) -> (text) query;
+  get_icrc_canister_id : () -> (principal) query;
+  get_will_canister_id : () -> (text) query;
+  hex_address_from_principal : (principal, nat32) -> (text) query;
+  icrc_icp_balanceOf : (nat32) -> (ManualReply) query;
+  icrc_icp_fee : () -> (ManualReply) query;
+  icrc_icp_transfer : (nat32, principal) -> (ManualReply_1);
+  list_canister_ids : () -> (vec record { text; text }) query;
+  set_will_canister_id : (text) -> (text);
+  verify_icrc_controller : (opt principal) -> (bool) query;
+}

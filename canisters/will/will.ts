@@ -15,6 +15,11 @@ import {
   UserDetails,
   Will,
   GetHeirWills,
+  CreateWill,
+  CreateWillArgs,
+  ICRCs,
+  ClaimWill,
+  DeleteWill,
 } from "./utils/types";
 import {
   add_user_details,
@@ -22,7 +27,8 @@ import {
   update_user_details,
   get_user_details,
 } from "./users";
-import { icrc_create_will, icrc_delete_will } from "./icrc";
+import { icrc_claim_will, icrc_create_will, icrc_delete_will } from "./icrc";
+
 //=============================================Stable Variables===========================================================
 
 //Store user details before creating any will
@@ -45,6 +51,9 @@ export let heirsMappingToWillIdentifier = new StableBTreeMap<
 
 // stable memory that caches all Identifiers with respect to caller Principal
 export let identifiersCache = new StableBTreeMap<nat32, Principal>(5, 32, 38);
+
+// list of identifiers that are being used
+export let isIdentifierUsed = new StableBTreeMap<nat32, boolean>(6, 32, 10);
 
 //-------------------------------------------------------FUNCTIONS---------------------------------------------
 
@@ -223,10 +232,149 @@ export async function request_random_will_identifier(): Promise<nat32> {
   return randomWillIdentifier;
 }
 
-export {
-  get_user_details,
-  add_user_details,
-  update_user_details,
-  icrc_create_will,
-  icrc_delete_will,
-};
+// root function for creating a will for supported assets type
+$update;
+export async function create_will(
+  args: CreateWillArgs,
+  willType: string
+): Promise<CreateWill> {
+  // check user existence
+  const isUserExists = is_user_exists(ic.caller());
+
+  if (!isUserExists) {
+    return {
+      userNotExists: true,
+    };
+  } else {
+    switch (willType) {
+      case "ICRC":
+        //will for all ICRC suppported assets
+        const icrcWill = await icrc_create_will(args.icrc);
+        return {
+          icrc: icrcWill,
+        };
+      case "BTC":
+        // will for Bitcoin asset
+        return {
+          willTypeNotSupported: true,
+        };
+      default:
+        // default always result in not supported type
+        return {
+          willTypeNotSupported: true,
+        };
+    }
+  }
+}
+
+//Function to delete a Will By Testator
+$update;
+export async function delete_will(
+  identifier: nat32,
+  willType: string
+): Promise<DeleteWill> {
+  //check user existence
+  if (!is_user_exists(ic.caller())) {
+    return {
+      userNotExists: true,
+    };
+  }
+
+  // check the will_identifer exist
+  if (!wills.containsKey(identifier)) {
+    return {
+      willNotExists: true,
+    };
+  }
+
+  if (!isIdentifierUsed.containsKey(identifier)) {
+    return {
+      identifierUsed: true,
+    };
+  }
+
+  const will = match(wills.get(identifier), {
+    Some: (willObj) => willObj,
+    None: (none) => none,
+  });
+  if (!will) {
+    return {
+      willNotExists: true,
+    };
+  } else {
+    if (will.testator.toText() == ic.caller().toText()) {
+      switch (willType) {
+        case "ICRC":
+          const icrcDeleteWill = await icrc_delete_will(identifier);
+          return {
+            icrc: icrcDeleteWill,
+          };
+        case "BTC":
+          return {
+            willTypeNotSupported: true,
+          };
+        default:
+          return {
+            willTypeNotSupported: true,
+          };
+      }
+    } else {
+      return {
+        unAuthorized: true,
+      };
+    }
+  }
+}
+
+// function to claim a will by heirs
+// Note: This Function didn't check whether the claimer is registered with the platform or not
+$update;
+export async function claim_will(
+  identifier: nat32,
+  willType: string
+): Promise<ClaimWill> {
+  // check the identifier exists inside a Stable Memory
+  if (!wills.containsKey(identifier)) {
+    return {
+      willNotExists: true,
+    };
+  }
+  const will = match(wills.get(identifier), {
+    Some: (will) => will,
+    None: () => null,
+  });
+
+  if (!will) {
+    return {
+      willNotExists: true,
+    };
+  }
+
+  // check whether the claimer princicpal is eligible to claim the funds with given identifier
+  const heirs = will.heirs;
+  const claimer = ic.caller();
+  if (heirs.toText() != claimer.toText()) {
+    return {
+      unAuthorized: true,
+    };
+  }
+  // call function based on will type
+  switch (willType) {
+    case "ICRC":
+      const claimWill = await icrc_claim_will(will);
+      return {
+        icrc: claimWill,
+      };
+    case "BTC":
+      return {
+        willTypeNotSupported: true,
+      };
+    default:
+      return {
+        willTypeNotSupported: true,
+      };
+  }
+}
+
+//===================================================EXPORTS==================================================
+export { get_user_details, add_user_details, update_user_details };

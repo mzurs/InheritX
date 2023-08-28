@@ -24,6 +24,8 @@ import {
 } from "./utils/types";
 import { MATCHID_URL, check_first_names } from "./utils/utils";
 
+//=============================================Stable Variables===========================================================
+
 // Stable Memory to cache Testator Details if claim death details verified
 
 const testatorCache = new StableBTreeMap<Principal, boolean>(1, 38, 100);
@@ -45,13 +47,15 @@ $postUpgrade;
 export function post_upgrade(): void {
   console.log("This runs after every canister upgrade");
 }
+
+//=============================================CANISTER PROVIDERS METHODS===================================================
+
 $update;
 export function get_matchid_url(): string {
   return MATCHID_URL!;
 }
 
 // Function to Whether Testator Already Died
-
 $query;
 export function isTestatorDied(testatorPrincipal: Principal): boolean {
   return match(testatorCache.get(testatorPrincipal), {
@@ -61,25 +65,12 @@ export function isTestatorDied(testatorPrincipal: Principal): boolean {
 }
 
 // Function to verify Testator Details With The Details Retrieve From base64_Identifier
-
 $update;
 export async function check_testator_details_with_id(
   testatorPrincipal: Principal,
   base64Id: string,
   testatorDetails: TestatorDetails
 ): Promise<CheckTestatorDetailsWithID> {
-  //For uint function testing
-
-  // const testatorDetails: TestatorDetails = {
-  //   firstNames: ["Concetina"],
-  //   lastName: "Cosentino",
-  //   sex: "F",
-  //   birthDate: "19330807",
-  //   birthLocationCode: "01202",
-  //   deathDate: "20230130",
-  //   deathLocationCode: "01004",
-  // };
-
   const URL = MATCHID_URL + "id/" + base64Id;
 
   const response = await managementCanister
@@ -170,8 +161,7 @@ export async function check_testator_details_with_id(
   }
 }
 
-//================================ HTTPs Outcalls Transformer ================================================
-
+// HTTPs Outcalls Transformer
 $query;
 export function testator_details_transform(
   args: HttpTransformArgs
