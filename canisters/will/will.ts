@@ -320,7 +320,7 @@ export async function delete_will(
       }
     } else {
       return {
-        unAuthorized: true,
+        unAuthorizedTestator: true,
       };
     }
   }
@@ -355,7 +355,7 @@ export async function claim_will(
   const claimer = ic.caller();
   if (heirs.toText() != claimer.toText()) {
     return {
-      unAuthorized: true,
+      unAuthorizedClaimer: true,
     };
   }
   // call function based on will type

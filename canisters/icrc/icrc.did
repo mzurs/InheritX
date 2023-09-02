@@ -26,6 +26,7 @@ type ManualReply_4 = variant {
   Ok : nat;
   Err : ICRC1TransferError;
   message : text;
+  success : nat;
   unAuthorized : bool;
 };
 type ManualReply_5 = variant {
@@ -64,7 +65,6 @@ service : () -> {
   ckbtc_balance_of : (ICRC1Account) -> (nat) query;
   ckbtc_fee : () -> (nat) query;
   ckbtc_transfer : (nat32, principal) -> (ManualReply);
-  generateId : () -> (principal);
   getIdentifierBlob : (nat32) -> (vec nat8) query;
   get_account_balance_of_icp_identifier : (principal, nat32) -> (ManualReply_1);
   get_canister_binary_subaccount_from_identifier : (nat32) -> (vec nat8) query;

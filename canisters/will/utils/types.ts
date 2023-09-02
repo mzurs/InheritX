@@ -1,5 +1,14 @@
-import { Duration, Principal, Record, Variant, Vec, blob, nat32 } from "azle";
-import { ICRCICPTRANSFER } from "../../icrc/utils/types";
+import {
+  Duration,
+  Principal,
+  Record,
+  Variant,
+  Vec,
+  blob,
+  nat,
+  nat32,
+} from "azle";
+import { ICPTRANSFER, ICRCICPTRANSFER } from "../../icrc/utils/types";
 
 // User Details
 export type UserDetails = Record<{
@@ -105,7 +114,7 @@ export type ClaimWill = Variant<{
   icrc: ICRCClaimWill;
   // btc: ClaimBTCWill;
   willNotExists: boolean;
-  unAuthorized: boolean;
+  unAuthorizedClaimer: boolean;
   claimError: boolean;
   willTypeNotSupported: boolean;
 }>;
@@ -114,13 +123,14 @@ export type ICRCClaimWill = Variant<{
   isClaimed: boolean;
   tokenTickerNotSupported: boolean;
   claimError: string;
-  result:ICRCICPTRANSFER
+  icpClaimResult: string;
+  // ckbtcClaimResult:
 }>;
 
 export type DeleteWill = Variant<{
   userNotExists: boolean;
   identifierUsed: boolean;
-  unAuthorized: boolean;
+  unAuthorizedTestator: boolean;
   willTypeNotSupported: boolean;
   willNotExists: boolean;
   icrc: ICRCDeleteWill;

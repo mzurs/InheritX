@@ -10,21 +10,11 @@ type GetUserDetails = variant {
   userDetails : UserDetails;
   userNotExists : bool;
 };
-type ICRC1TransferError = variant {
-  GenericError : _InlineICRC1TransferErrorGenericError;
-  TemporarilyUnavailable;
-  BadBurn : _InlineICRC1TransferErrorBadBurn;
-  Duplicate : _InlineICRC1TransferErrorDuplicate;
-  BadFee : _InlineICRC1TransferErrorBadFee;
-  CreatedInFuture : _InlineICRC1TransferErrorCreatedInFuture;
-  TooOld;
-  InsufficientFunds : _InlineICRC1TransferErrorInsufficientFunds;
-};
 type ICRCClaimWill = variant {
-  result : ICRCICPTRANSFER;
   isClaimed : bool;
   claimError : text;
   tokenTickerNotSupported : bool;
+  icpClaimResult : text;
 };
 type ICRCCreateWill = variant {
   identifierUsed : bool;
@@ -40,17 +30,11 @@ type ICRCCreateWillArgs = record {
   amount : nat32;
 };
 type ICRCDeleteWill = variant { errorMessage : text; success : bool };
-type ICRCICPTRANSFER = variant {
-  Ok : nat;
-  Err : ICRC1TransferError;
-  message : text;
-  unAuthorized : bool;
-};
 type ManualReply = variant {
   icrc : ICRCClaimWill;
   claimError : bool;
   willNotExists : bool;
-  unAuthorized : bool;
+  unAuthorizedClaimer : bool;
   willTypeNotSupported : bool;
 };
 type ManualReply_1 = variant {
@@ -85,15 +69,6 @@ type Will = record {
   tokenTicker : text;
   identifier : nat32;
 };
-type _InlineICRC1TransferErrorBadBurn = record { min_burn_amount : nat };
-type _InlineICRC1TransferErrorBadFee = record { expected_fee : nat };
-type _InlineICRC1TransferErrorCreatedInFuture = record { ledger_time : nat64 };
-type _InlineICRC1TransferErrorDuplicate = record { duplicate_of : nat };
-type _InlineICRC1TransferErrorGenericError = record {
-  message : text;
-  error_code : nat;
-};
-type _InlineICRC1TransferErrorInsufficientFunds = record { balance : nat };
 type userDetailsArgs = record {
   sex : text;
   birthDate : text;

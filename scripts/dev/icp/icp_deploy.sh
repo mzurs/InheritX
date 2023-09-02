@@ -21,18 +21,18 @@ dfx canister uninstall-code icp_ledger || true
 dfx identity use default
 
 # Using this ledger.private.did
-dfx deploy icp_ledger --argument '(record {minting_account = "'${MINT_ACC}'";
-initial_values = vec { record {   "'$(dfx ledger account-id --of-principal up5qv-6itp6-z5fuj-kfq2a-qohj4-ckibb-lq6tt-34j2c-i2d27-3gqlm-pqe)'";
-record { e8s=1_000_000_000 } } }; send_whitelist = vec {}})' --specified-id ryjl3-tyaaa-aaaaa-aaaba-cai
+# dfx deploy icp_ledger --argument '(record {minting_account = "'${MINT_ACC}'";
+# initial_values = vec { record {   "'$(dfx ledger account-id --of-principal up5qv-6itp6-z5fuj-kfq2a-qohj4-ckibb-lq6tt-34j2c-i2d27-3gqlm-pqe)'";
+# record { e8s=1_000_000_000 } } }; send_whitelist = vec {}})' --specified-id ryjl3-tyaaa-aaaaa-aaaba-cai
 
-# dfx deploy icp_ledger --argument '(variant {Init =record {minting_account = "'$(dfx ledger account-id)'";
-# initial_values = vec { record {   "'$(dfx ledger account-id ---of-principal up5qv-6itp6-z5fuj-kfq2a-qohj4-ckibb-lq6tt-34j2c-i2d27-3gqlm-pqe)'";
-# record { e8s=100_000_000_000 } } }; send_whitelist = vec {}}})' --specified-id ryjl3-tyaaa-aaaaa-aaaba-cai
+dfx deploy icp_ledger --argument '(variant {Init =record {minting_account = "'$(dfx ledger account-id)'";
+initial_values = vec { record {   "'$(dfx ledger account-id --of-principal up5qv-6itp6-z5fuj-kfq2a-qohj4-ckibb-lq6tt-34j2c-i2d27-3gqlm-pqe)'";
+record { e8s=100_000_000_000 } } }; send_whitelist = vec {}}})' --specified-id ryjl3-tyaaa-aaaaa-aaaba-cai
 
 # dfx deploy icp_ledger --argument "(variant {Init = record {
 
 #   minting_account = \"${MINT_ACC}\";
-#   initial_values = vec { record { "'$(dfx ledger account-id --of-principal "'${ARCHIVE_CONTROLLER}'")'"; record { e8s=100_000_000_000 } } };
+#   initial_values = vec { record { account= \"b53f8879bd24d55dbd9ba16e796f9ccb5a94aa3d968e680d7ff64434f02961f9\"; record { e8s=100_000_000_000 } } };
 #   send_whitelist = vec {};
 #   archive_options = opt record {
 #     trigger_threshold = 2000;
