@@ -16,3 +16,10 @@ export type ICPTRANSFER = Variant<{
   unAuthorized: boolean;
   message: string;
 }>;
+
+export type ICRCCKBTCTRANSFER = Variant<{
+  Ok: nat;
+  Err: ICRC1TransferError;
+  unAuthorized: boolean;
+  message: string;
+}>;

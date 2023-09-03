@@ -11,10 +11,11 @@ type GetUserDetails = variant {
   userNotExists : bool;
 };
 type ICRCClaimWill = variant {
+  ckbtcClaimResult : _InlineICRCClaimWillCkbtcClaimResult;
   isClaimed : bool;
   claimError : text;
   tokenTickerNotSupported : bool;
-  icpClaimResult : text;
+  icpClaimResult : _InlineICRCClaimWillIcpClaimResult;
 };
 type ICRCCreateWill = variant {
   identifierUsed : bool;
@@ -27,7 +28,7 @@ type ICRCCreateWillArgs = record {
   willName : text;
   tokenTicker : text;
   identifier : nat32;
-  amount : nat32;
+  amount : nat;
 };
 type ICRCDeleteWill = variant { errorMessage : text; success : bool };
 type ManualReply = variant {
@@ -45,9 +46,9 @@ type ManualReply_1 = variant {
 type ManualReply_2 = variant {
   identifierUsed : bool;
   icrc : ICRCDeleteWill;
+  unAuthorizedTestator : bool;
   willNotExists : bool;
   userNotExists : bool;
-  unAuthorized : bool;
   willTypeNotSupported : bool;
 };
 type UpdateUserDetails = variant { success : bool; userNotExists : bool };
@@ -61,13 +62,21 @@ type UserDetails = record {
 };
 type Will = record {
   heirs : principal;
-  value : nat32;
+  value : nat;
   willName : text;
   timeStamp : nat64;
   testator : principal;
   isClaimed : bool;
   tokenTicker : text;
   identifier : nat32;
+};
+type _InlineICRCClaimWillCkbtcClaimResult = record {
+  success : bool;
+  claimCKBTCMessage : text;
+};
+type _InlineICRCClaimWillIcpClaimResult = record {
+  claimICPMessage : text;
+  success : bool;
 };
 type userDetailsArgs = record {
   sex : text;
@@ -78,15 +87,18 @@ type userDetailsArgs = record {
 };
 service : () -> {
   add_user_details : (userDetailsArgs) -> (AddUserDetails);
+  canisterBalance : () -> (nat64) query;
   claim_will : (nat32, text) -> (ManualReply);
   create_will : (CreateWillArgs, text) -> (ManualReply_1);
   delete_will : (nat32, text) -> (ManualReply_2);
   get_all_identifiers : () -> (vec record { nat32; principal }) query;
   get_all_wills : () -> (vec record { nat32; Will }) query;
+  get_icrc_canister_id : () -> (text) query;
   get_user_details : () -> (GetUserDetails) query;
   get_will_canister_id : () -> (principal) query;
   get_wills_for_heir : () -> (GetHeirWills) query;
   get_wills_for_testator : () -> (GetTestatorWills) query;
   request_random_will_identifier : () -> (nat32);
+  set_icrc_canister_id : (text) -> (text);
   update_user_details : (userDetailsArgs) -> (UpdateUserDetails);
 }

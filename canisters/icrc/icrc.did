@@ -9,15 +9,16 @@ type ICRC1TransferError = variant {
   TooOld;
   InsufficientFunds : _InlineICRC1TransferErrorInsufficientFunds;
 };
-type ManualReply = variant {
-  Ok : nat;
-  Err : ICRC1TransferError;
-  strErr : text;
-};
-type ManualReply_1 = variant { Ok : Tokens; Err : text };
-type ManualReply_2 = variant {
+type ManualReply = variant { Ok : Tokens; Err : text };
+type ManualReply_1 = variant {
   Ok : nat;
   Err : TransferError;
+  message : text;
+  unAuthorized : bool;
+};
+type ManualReply_2 = variant {
+  Ok : nat;
+  Err : ICRC1TransferError;
   message : text;
   unAuthorized : bool;
 };
@@ -28,16 +29,6 @@ type ManualReply_4 = variant {
   message : text;
   success : nat;
   unAuthorized : bool;
-};
-type ManualReply_5 = variant {
-  Ok : nat;
-  Err : ICRC1TransferError;
-  strErr : text;
-};
-type ManualReply_6 = variant {
-  Ok : nat;
-  Err : ICRC1TransferError;
-  strErr : text;
 };
 type Tokens = record { e8s : nat64 };
 type TransferError = variant {
@@ -62,23 +53,22 @@ type _InlineTransferErrorTxDuplicate = record { duplicate_of : nat64 };
 type _InlineTransferErrorTxTooOld = record { allowed_window_nanos : nat64 };
 service : () -> {
   binary_address_from_principal : (principal, nat32) -> (vec nat8) query;
+  canisterBalance128 : () -> (nat) query;
   ckbtc_balance_of : (ICRC1Account) -> (nat) query;
   ckbtc_fee : () -> (nat) query;
-  ckbtc_transfer : (nat32, principal) -> (ManualReply);
   getIdentifierBlob : (nat32) -> (vec nat8) query;
-  get_account_balance_of_icp_identifier : (principal, nat32) -> (ManualReply_1);
+  get_account_balance_of_icp_identifier : (principal, nat32) -> (ManualReply);
   get_canister_binary_subaccount_from_identifier : (nat32) -> (vec nat8) query;
   get_canister_hex_subaccount_from_identifier : (nat32) -> (text) query;
   get_icrc_canister_id : () -> (principal) query;
   get_will_canister_id : () -> (text) query;
   hex_address_from_principal : (principal, nat32) -> (text) query;
-  icp_transfer : (nat32, principal) -> (ManualReply_2);
+  icp_transfer : (nat32, principal) -> (ManualReply_1);
+  icrc_ckbtc_transfer : (nat32, principal, nat) -> (ManualReply_2);
   icrc_icp_balanceOf : (nat32) -> (ManualReply_3) query;
   icrc_icp_fee : () -> (ManualReply_3) query;
   icrc_icp_transfer : (nat32, principal) -> (ManualReply_4);
   list_canister_ids : () -> (vec record { text; text }) query;
   set_will_canister_id : (text) -> (text);
-  transferFrom : (nat32) -> (ManualReply_5);
-  transferTo : (nat32, principal) -> (ManualReply_6);
   verify_icrc_controller : (opt principal) -> (bool) query;
 }

@@ -33,6 +33,7 @@ import {
 } from "./ledgers/icp/icp";
 import {
   WILL_CANISTER_ID,
+  canisterBalance128,
   getSubAccountArray,
   get_will_canister_id,
   set_will_canister_id,
@@ -40,9 +41,7 @@ import {
 import {
   ckbtc_balance_of,
   ckbtc_fee,
-  ckbtc_transfer,
-  transferFrom,
-  transferTo,
+  icrc_ckbtc_transfer,
 } from "./ledgers/ckbtc/ckbtc";
 //=============================================Stable Variables===========================================================
 
@@ -52,9 +51,7 @@ export const ckbtcLedger: ICRC = new ICRC(Principal.fromText(CKBTC_PRINCIPAL));
 //=============================================CANISTER LIFECYCLE=========================================================
 
 $init;
-export function init(): void {
-  
-}
+export function init(): void {}
 
 $preUpgrade;
 export function preUpgrade(): void {
@@ -70,19 +67,7 @@ export function postUpgrade(): void {
 
 //----------------------------------------------Query Methods--------------------------------------------------------
 
-// $update;
-// export function generateId(): Principal {
-//   const randomBytes = new Array(29)
-//     .fill(0)
-//     .map((_) => Math.floor(Math.random() * 256));
 
-//   const num: nat32 = 34;
-//   const principal: Principal = Principal.fromText(
-//     "2d5b3-qwqqi-6lqcc-hlbpr-usr2a-xssrt-k5xae-ulskf-y5n22-uqija-j3s"
-//   );
-//   console.log(principal.toUint8Array());
-//   return Principal.fromUint8Array(Uint8Array.from(randomBytes));
-// }
 // list of canisterids and Ledgers IDs that are pass in an environment variable and others
 $query;
 export function list_canister_ids(): Vec<Tuple<[string, string]>> {
@@ -150,12 +135,13 @@ export function getIdentifierBlob(identifier: nat32): blob {
 }
 //----------------------------------------------Update Methods--------------------------------------------------------
 
-//----------------------------------------------EXports---------------------------------------------------------------
+//----------------------------------------------Exports---------------------------------------------------------------
 
 export {
   //utils
   get_will_canister_id,
   set_will_canister_id,
+  canisterBalance128,
   //icp
   icrc_icp_fee,
   icrc_icp_transfer,
@@ -165,8 +151,6 @@ export {
 
   //ckbtc
   ckbtc_fee,
-  ckbtc_transfer,
+  icrc_ckbtc_transfer,
   ckbtc_balance_of,
-  transferFrom,
-  transferTo,
 };

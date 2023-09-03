@@ -23,7 +23,7 @@
         "output": "dfx_generated/will",
         "node_compatibility": true
       },
-      "env":["ICRC_CANISTER_ID"]
+      "env": ["ICRC_CANISTER_ID"]
     },
 
     "icrc": {
@@ -46,6 +46,10 @@
         "id": {
           "ic": "mxzaz-hqaaa-aaaar-qaada-cai"
         }
+      },
+      "declarations": {
+        "output": "dfx_generated/icrc",
+        "node_compatibility": true
       }
     },
     "icp_ledger": {

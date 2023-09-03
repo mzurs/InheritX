@@ -1,4 +1,4 @@
-import { Vec } from "azle";
+import { $query, Vec, ic, nat } from "azle";
 
 export const MATCHID_URL: string = "https://deces.matchid.io/deces/api/v1/";
 
@@ -15,4 +15,10 @@ export function check_first_names(
     }
   }
   return true;
+}
+
+// returns the amount of cycles available in the canister
+$query;
+export function canisterBalance128(): nat {
+    return ic.canisterBalance128();
 }

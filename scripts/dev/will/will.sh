@@ -132,7 +132,19 @@ dfx identity use userA
 dfx canister call will create_will "( variant{ icrc=record { willName= \"Transfer_to_UserB\" ;
   identifier= $Identifier ; heirs= principal \"$userB\" ;  tokenTicker = \"ICP\"; amount = 101; }} , \"ICRC\")"
 
+# Creating a will using CKBTC Asset for User B
+echo -e "\n Creating a Will using CKBTC for User B"
+dfx identity use userA
+Identifier=$(dfx canister call will request_random_will_identifier)
+echo "Random Identifier = " $Identifier
+
+echo -e "\n.................Creating ICRC WIll Functions....."
+echo "Creating ICRC Will from UserA to UserB with Identifier " $Identifier
+dfx identity use userA
+dfx canister call will create_will "( variant{ icrc=record { willName= \"Transfer_to_UserB\" ;
+  identifier= $Identifier; heirs= principal \"$userB\" ;  tokenTicker = \"ckBTC\"; amount = 100_000_000; }}, \"ICRC\")"
 
 # Swithcing to default in the end of script
+
 echo -e "\n==========================================SWITCHING TO DEFAULT IDENTITY========================================="
 dfx identity use default

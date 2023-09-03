@@ -28,6 +28,7 @@ import {
   get_user_details,
 } from "./users";
 import { icrc_claim_will, icrc_create_will, icrc_delete_will } from "./icrc";
+import { canisterBalance } from "./utils/utils";
 
 //=============================================Stable Variables===========================================================
 
@@ -377,4 +378,9 @@ export async function claim_will(
 }
 
 //===================================================EXPORTS==================================================
-export { get_user_details, add_user_details, update_user_details };
+export {
+  get_user_details,
+  add_user_details,
+  update_user_details,
+  canisterBalance,
+};

@@ -1,4 +1,4 @@
-import { $query, $update } from "azle";
+import { $query, $update, ic, nat } from "azle";
 
 //CANISTER IDs
 export let WILL_CANISTER_ID = "";
@@ -24,4 +24,10 @@ export function to32Bits(number: number): number[] {
   let b = new ArrayBuffer(4);
   new DataView(b).setUint32(0, number);
   return Array.from(new Uint8Array(b));
+}
+
+// returns the amount of cycles available in the canister
+$query;
+export function canisterBalance128(): nat {
+  return ic.canisterBalance128();
 }

@@ -22,7 +22,11 @@ import {
   Person,
   TestatorDetails,
 } from "./utils/types";
-import { MATCHID_URL, check_first_names } from "./utils/utils";
+import {
+  MATCHID_URL,
+  canisterBalance128,
+  check_first_names,
+} from "./utils/utils";
 
 //=============================================Stable Variables===========================================================
 
@@ -171,3 +175,6 @@ export function testator_details_transform(
     headers: [],
   };
 }
+
+//===============================================EXPORTS===========================================================
+export { canisterBalance128 };

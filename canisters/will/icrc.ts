@@ -112,27 +112,21 @@ export async function icrc_claim_will(_will: Will): Promise<ICRCClaimWill> {
   // switch to specific token
   switch (will.tokenTicker) {
     //claim process for CKBTC
-    case "CKBTC":
-      return {
-        tokenTickerNotSupported: true,
-      };
-    //claim process for ICP
-    case "ICP":
-      const claimResult = await icrc
-        .icp_transfer(will.identifier, will.heirs)
+    case "ckBTC":
+      const claimCKBTCResult = await icrc
+        .icrc_ckbtc_transfer(will.identifier, will.heirs, will.value)
         .call();
-
-      const claim = match(claimResult, {
+      const claimCKBTC = match(claimCKBTCResult, {
         Ok: (claim) => claim,
         Err: () => null,
       });
-      if (!claim) {
+      if (!claimCKBTC) {
         return {
-          claimError: String(claimResult.Err!),
+          claimError: String(claimCKBTCResult.Err!),
         };
       } else {
         return {
-          icpClaimResult: match(claim, {
+          ckbtcClaimResult: match(claimCKBTC, {
             Ok: (ok) => {
               //After 'Ok' remove will object inside stable memory
               wills.remove(will.identifier);
@@ -142,12 +136,103 @@ export async function icrc_claim_will(_will: Will): Promise<ICRCClaimWill> {
                 will.heirs,
                 will.identifier
               );
-              return String(ok);
+              return {
+                claimCKBTCMessage: `Successfully claim ckBTC => ${ok}`,
+                success: true,
+              };
             },
-            Err: (err) => String(err),
-            unAuthorized: (unauthorized) =>
-              String(`UnAuthorized:${unauthorized} to Access ICRC Canister`),
-            message: (message) => message,
+            Err: (err) => {
+              return {
+                claimCKBTCMessage: match(err, {
+                  BadBurn: (badBurn) =>
+                    String(`Bad Burn: ${badBurn.min_burn_amount}`),
+                  BadFee: (badFee) => String(`Bad Fee: ${badFee.expected_fee}`),
+                  InsufficientFunds: (insufficientFunds) =>
+                    String(
+                      `Inssufficient Balance: ${insufficientFunds.balance}`
+                    ),
+                  TooOld: (tooOld) => String(`TooOld: ${tooOld}`),
+                  CreatedInFuture: (createInFuture) =>
+                    String(`Created In Future: ${createInFuture.ledger_time}`),
+                  Duplicate: (duplicate) =>
+                    String(`Duplicate: ${duplicate.duplicate_of}`),
+                  TemporarilyUnavailable: (temporarilyUnavailable) =>
+                    String(`Temporary Unavilable: ${temporarilyUnavailable}`),
+                  GenericError: (genericError) =>
+                    String(`Generic Error: ${genericError}`),
+                }),
+                success: false,
+              };
+            },
+            unAuthorized: (unauthorized) => {
+              return {
+                claimCKBTCMessage: String(
+                  `Unauthorized Access to Will Canister => ${unauthorized}`
+                ),
+                success: false,
+              };
+            },
+            message: (message) => {
+              return {
+                claimCKBTCMessage: message,
+                success: false,
+              };
+            },
+          }),
+        };
+      }
+
+    //claim process for ICP
+    case "ICP":
+      const claimICPResult = await icrc
+        .icp_transfer(will.identifier, will.heirs)
+        .call();
+
+      const claimICP = match(claimICPResult, {
+        Ok: (claimICP) => claimICP,
+        Err: () => null,
+      });
+      if (!claimICP) {
+        return {
+          claimError: String(claimICPResult.Err!),
+        };
+      } else {
+        return {
+          icpClaimResult: match(claimICP, {
+            Ok: (ok) => {
+              //After 'Ok' remove will object inside stable memory
+              wills.remove(will.identifier);
+              //Also remove identifier Mapping for a testator and a heirs
+              remove_identifier_from_mapping(
+                will.testator,
+                will.heirs,
+                will.identifier
+              );
+              return {
+                claimICPMessage: `Successfully claim ICP =>${ok}`,
+                success: true,
+              };
+            },
+            Err: (err) => {
+              return {
+                claimICPMessage: String(err),
+                success: false,
+              };
+            },
+            unAuthorized: (unauthorized) => {
+              return {
+                claimICPMessage: String(
+                  `Unauthorized Access to Will Canister => ${unauthorized}`
+                ),
+                success: false,
+              };
+            },
+            message: (message) => {
+              return {
+                claimICPMessage: message,
+                success: false,
+              };
+            },
           }),
         };
       }

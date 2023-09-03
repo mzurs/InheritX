@@ -9,6 +9,7 @@ import {
   nat32,
 } from "azle";
 import { ICPTRANSFER, ICRCICPTRANSFER } from "../../icrc/utils/types";
+import { ICRC1TransferError } from "azle/canisters/icrc";
 
 // User Details
 export type UserDetails = Record<{
@@ -61,7 +62,7 @@ export type Will = Record<{
   tokenTicker: string;
   testator: Principal;
   heirs: Principal;
-  value: nat32;
+  value: nat;
   timeStamp: Duration;
   isClaimed: boolean;
 }>;
@@ -78,7 +79,7 @@ export type ICRCCreateWillArgs = Record<{
   identifier: nat32;
   heirs: Principal;
   tokenTicker: string;
-  amount: nat32;
+  amount: nat;
 }>;
 
 export type ICRCDeleteWill = Variant<{
@@ -123,8 +124,14 @@ export type ICRCClaimWill = Variant<{
   isClaimed: boolean;
   tokenTickerNotSupported: boolean;
   claimError: string;
-  icpClaimResult: string;
-  // ckbtcClaimResult:
+  icpClaimResult: Record<{
+    claimICPMessage: string;
+    success: boolean;
+  }>;
+  ckbtcClaimResult: Record<{
+    claimCKBTCMessage: string;
+    success: boolean;
+  }>;
 }>;
 
 export type DeleteWill = Variant<{

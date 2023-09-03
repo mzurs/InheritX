@@ -9,7 +9,7 @@ import {
   nat,
   nat32,
 } from "azle";
-import { ICRC1Account, ICRC1TransferArgs } from "azle/canisters/icrc";
+import { ICRC1Account, ICRC1TransferArgs,ICRC1TransferError} from "azle/canisters/icrc";
 import {
   binaryAddressFromPrincipal,
   Tokens,
@@ -19,7 +19,7 @@ import { getIdentifierBlob, icpLedger } from "../../icrc";
 import { ICPTRANSFER, ICRCICPTRANSFER } from "../../utils/types";
 import { WILL_CANISTER_ID } from "../../utils/utils";
 
-//==============================================ICP(ICRC) Ledger METHODS===============================================
+//==============================================ICP Ledger METHODS===============================================
 
 //----------------------------------------------Query Methods--------------------------------------------------------
 
