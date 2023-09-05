@@ -52,6 +52,7 @@
         "node_compatibility": true
       }
     },
+
     "icp_ledger": {
       "type": "custom",
       "candid": "canisters/icrc/ledgers/icp/ledger.public.did",
@@ -65,6 +66,19 @@
         "output": "dfx_generated/icrc",
         "node_compatibility": true
       }
+    },
+    "bitcoin_canister": {
+      "type": "custom",
+      "build": "npx azle bitcoin_canister",
+      "root": "canisters/bitcoin_canister/src",
+      "ts": "canisters/bitcoin_canister/src/index.ts",
+      "candid": "canisters/bitcoin_canister/src/index.did",
+      "wasm": ".azle/bitcoin_canister/bitcoin_canister.wasm.gz",
+      "declarations": {
+        "output": "dfx_generated/bitcoin_canister",
+        "node_compatibility": true
+      },
+      "opt_level": "1"
     }
   }
 }
