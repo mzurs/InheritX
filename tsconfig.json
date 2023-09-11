@@ -9,4 +9,6 @@
     "outDir": "HACK_BECAUSE_OF_ALLOW_JS",
     "esModuleInterop": true
   }
+  ,
+  // "exclude": ["canisters/bitcoin"]
 }

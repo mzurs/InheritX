@@ -1,5 +1,6 @@
-node_modules
 .azle
+.bitcoin
 .dfx
 dfx_generated
-.bitcoin
+node_modules
+

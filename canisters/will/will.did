@@ -87,6 +87,7 @@ type userDetailsArgs = record {
 };
 service : () -> {
   add_user_details : (userDetailsArgs) -> (AddUserDetails);
+  bitcoin_get_balance : (text) -> (nat64);
   canisterBalance : () -> (nat64) query;
   claim_will : (nat32, text) -> (ManualReply);
   create_will : (CreateWillArgs, text) -> (ManualReply_1);

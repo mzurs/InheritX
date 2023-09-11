@@ -29,6 +29,7 @@ import {
 } from "./users";
 import { icrc_claim_will, icrc_create_will, icrc_delete_will } from "./icrc";
 import { canisterBalance } from "./utils/utils";
+import { bitcoin_get_balance } from "./btc";
 
 //=============================================Stable Variables===========================================================
 
@@ -383,4 +384,5 @@ export {
   add_user_details,
   update_user_details,
   canisterBalance,
+  bitcoin_get_balance,
 };

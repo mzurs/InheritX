@@ -16,6 +16,7 @@ type TestatorDetails = record {
   lastName : text;
 };
 service : () -> {
+  canisterBalance128 : () -> (nat) query;
   check_testator_details_with_id : (principal, text, TestatorDetails) -> (
       ManualReply,
     );
