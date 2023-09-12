@@ -17,7 +17,6 @@ import {
   GetHeirWills,
   CreateWill,
   CreateWillArgs,
-  ICRCs,
   ClaimWill,
   DeleteWill,
 } from "./utils/types";
@@ -30,6 +29,11 @@ import {
 import { icrc_claim_will, icrc_create_will, icrc_delete_will } from "./icrc";
 import { canisterBalance } from "./utils/utils";
 import { bitcoin_get_balance } from "./btc";
+import {
+  check_death_by_identifier,
+  providers,
+  report_death_by_base64Id,
+} from "./providers";
 
 //=============================================Stable Variables===========================================================
 
@@ -307,7 +311,7 @@ export async function delete_will(
     if (will.testator.toText() == ic.caller().toText()) {
       switch (willType) {
         case "ICRC":
-          const icrcDeleteWill = await icrc_delete_will(identifier);
+          const icrcDeleteWill = await icrc_delete_will(will);
           return {
             icrc: icrcDeleteWill,
           };
@@ -360,29 +364,59 @@ export async function claim_will(
       unAuthorizedClaimer: true,
     };
   }
-  // call function based on will type
-  switch (willType) {
-    case "ICRC":
-      const claimWill = await icrc_claim_will(will);
-      return {
-        icrc: claimWill,
-      };
-    case "BTC":
-      return {
-        willTypeNotSupported: true,
-      };
-    default:
-      return {
-        willTypeNotSupported: true,
-      };
+
+  //checking the testator is died by cross canister call to provider
+  const isTestatorDiedResult = await providers
+    .isTestatorDied(will.testator)
+    .call();
+  const isTestatorDied = match(isTestatorDiedResult, {
+    Ok: (res) => res,
+    Err: () => null,
+  });
+
+  if (isTestatorDied == null) {
+    return {
+      claimErrorFromCanisterCall: String(isTestatorDiedResult.Err),
+    };
+  }
+  if (isTestatorDied) {
+    // call function based on will type
+    switch (willType) {
+      case "ICRC":
+        const claimWill = await icrc_claim_will(will);
+        return {
+          icrc: claimWill,
+        };
+      case "BTC":
+        return {
+          willTypeNotSupported: true,
+        };
+      default:
+        return {
+          willTypeNotSupported: true,
+        };
+    }
+  } else {
+    return {
+      claimErrorFromProvider: String("Unable to claim Asset right now"),
+    };
   }
 }
 
 //===================================================EXPORTS==================================================
 export {
+  //users
   get_user_details,
   add_user_details,
   update_user_details,
+
+  //utils
   canisterBalance,
+
+  //btc
   bitcoin_get_balance,
+
+  //providers
+  check_death_by_identifier,
+  report_death_by_base64Id,
 };

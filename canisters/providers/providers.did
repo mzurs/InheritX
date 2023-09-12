@@ -5,13 +5,15 @@ type HttpResponse = record {
   headers : vec HttpHeader;
 };
 type HttpTransformArgs = record { context : vec nat8; response : HttpResponse };
-type ManualReply = record { result : bool; message : opt text };
+type ManualReply = record {
+  result : bool;
+  errorMessage : opt text;
+  message : opt text;
+};
 type TestatorDetails = record {
   sex : text;
-  deathDate : text;
   birthDate : text;
   birthLocationCode : text;
-  deathLocationCode : text;
   firstNames : vec text;
   lastName : text;
 };

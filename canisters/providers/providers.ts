@@ -96,9 +96,16 @@ export async function check_testator_details_with_id(
 
   const unparsedResponse = match(response, {
     Ok: (unparsedResponse) => unparsedResponse,
-    Err: (err) => ic.trap(err),
+    Err: (err) => null,
   });
 
+  if (unparsedResponse == null) {
+    return {
+      result: false,
+      errorMessage: Opt.Some(String(response.Err)),
+      message: Opt.None,
+    };
+  }
   const parsedResponseBody = JSON.parse(
     decodeUtf8(Uint8Array.from(unparsedResponse.body))
   );
@@ -107,6 +114,7 @@ export async function check_testator_details_with_id(
 
   if (total == 0 || total > 1) {
     return {
+      errorMessage: Opt.None,
       result: false,
       message: Opt.Some(`Testator Details Not Found ${total}`),
     };
@@ -136,13 +144,15 @@ export async function check_testator_details_with_id(
           responseLastName == testatorDetails.lastName &&
           responseBirthDate == testatorDetails.birthDate &&
           responseBirthLocationCode == testatorDetails.birthLocationCode,
-        responseDeathDate == testatorDetails.deathDate &&
-          responseDeathLocationCode == testatorDetails.deathLocationCode &&
+        responseDeathDate /*== testatorDetails.deathDate*/ &&
+          responseDeathLocationCode /*== testatorDetails.deathLocationCode*/ &&
           responseSex == testatorDetails.sex)
       ) {
         testatorCache.insert(testatorPrincipal, true);
 
         return {
+          errorMessage: Opt.None,
+
           result: true,
           message: Opt.Some(
             "Testator Details Successfully Verified from MatchID Database"
@@ -150,6 +160,7 @@ export async function check_testator_details_with_id(
         };
       } else {
         return {
+          errorMessage: Opt.None,
           result: false,
           message: Opt.Some(
             ` "Testator Details Not Verified from MatchID Database"`
@@ -160,6 +171,7 @@ export async function check_testator_details_with_id(
       return {
         result: false,
         message: Opt.Some(`Testator Number should be 1`),
+        errorMessage: Opt.None,
       };
     }
   }

@@ -45,6 +45,7 @@ export async function icrc_create_will(
 
   const willObject: Will = {
     willName: args.willName,
+    willDescription: args.willDescription,
     identifier: args.identifier,
     tokenTicker: args.tokenTicker,
     testator: ic.caller(),
@@ -69,33 +70,153 @@ export async function icrc_create_will(
 }
 
 //  delete a will
-export async function icrc_delete_will(
-  identifier: nat32
-): Promise<ICRCDeleteWill> {
-  const willOpt: Opt<Will> = wills.get(identifier);
-  const will = match(willOpt, {
-    Some: (will) => will,
-    None: (none) => none,
-  });
-
-  if (!will) {
+export async function icrc_delete_will(_will: Will): Promise<ICRCDeleteWill> {
+  const will = _will;
+  if (will.isClaimed) {
     return {
-      errorMessage: "Error While Fetching Wll Details",
+      isClaimed: true,
+    };
+  }
+  if (!ICRCs.includes(will.tokenTicker)) {
+    return {
+      tokenTickerNotSupported: true,
     };
   }
 
-  const heirs = will.heirs;
-  const testator = ic.caller();
+  // switch to specific token
+  switch (will.tokenTicker) {
+    //claim process for CKBTC
+    case "ckBTC":
+      const retainCKBTCResult = await icrc
+        .icrc_ckbtc_transfer(will.identifier, will.testator, will.value)
+        .call();
+      const retainCKBTC = match(retainCKBTCResult, {
+        Ok: (claim) => claim,
+        Err: () => null,
+      });
+      if (!retainCKBTC) {
+        return {
+          retainError: String(retainCKBTCResult.Err!),
+        };
+      } else {
+        return {
+          ckbtcRetainResult: match(retainCKBTC, {
+            Ok: (ok) => {
+              //After 'Ok' remove will object inside stable memory
+              wills.remove(will.identifier);
+              //Also remove identifier Mapping for a testator and a heirs
+              remove_identifier_from_mapping(
+                will.testator,
+                will.heirs,
+                will.identifier
+              );
+              return {
+                retainCKBTCMessage: `Successfully claim ckBTC => ${ok}`,
+                success: true,
+              };
+            },
+            Err: (err) => {
+              return {
+                retainCKBTCMessage: match(err, {
+                  BadBurn: (badBurn) =>
+                    String(`Bad Burn: ${badBurn.min_burn_amount}`),
+                  BadFee: (badFee) => String(`Bad Fee: ${badFee.expected_fee}`),
+                  InsufficientFunds: (insufficientFunds) =>
+                    String(
+                      `Inssufficient Balance: ${insufficientFunds.balance}`
+                    ),
+                  TooOld: (tooOld) => String(`TooOld: ${tooOld}`),
+                  CreatedInFuture: (createInFuture) =>
+                    String(`Created In Future: ${createInFuture.ledger_time}`),
+                  Duplicate: (duplicate) =>
+                    String(`Duplicate: ${duplicate.duplicate_of}`),
+                  TemporarilyUnavailable: (temporarilyUnavailable) =>
+                    String(`Temporary Unavilable: ${temporarilyUnavailable}`),
+                  GenericError: (genericError) =>
+                    String(`Generic Error: ${genericError}`),
+                }),
+                success: false,
+              };
+            },
+            unAuthorized: (unauthorized) => {
+              return {
+                retainCKBTCMessage: String(
+                  `Unauthorized Access to Will Canister => ${unauthorized}`
+                ),
+                success: false,
+              };
+            },
+            message: (message) => {
+              return {
+                retainCKBTCMessage: message,
+                success: false,
+              };
+            },
+          }),
+        };
+      }
 
-  wills.remove(identifier);
+    //claim process for ICP
+    case "ICP":
+      const retainICPResult = await icrc
+        .icp_transfer(will.identifier, will.testator)
+        .call();
 
-  remove_identifier_from_mapping(testator, heirs, identifier);
-
-  return {
-    success: true,
-  };
+      const retainICP = match(retainICPResult, {
+        Ok: (retainICP) => retainICP,
+        Err: () => null,
+      });
+      if (!retainICP) {
+        return {
+          retainError: String(retainICPResult.Err!),
+        };
+      } else {
+        return {
+          icpRetainResult: match(retainICP, {
+            Ok: (ok) => {
+              //After 'Ok' remove will object inside stable memory
+              wills.remove(will.identifier);
+              //Also remove identifier Mapping for a testator and a heirs
+              remove_identifier_from_mapping(
+                will.testator,
+                will.heirs,
+                will.identifier
+              );
+              return {
+                retainICPMessage: `Successfully claim ICP =>${ok}`,
+                success: true,
+              };
+            },
+            Err: (err) => {
+              return {
+                retainICPMessage: String(err),
+                success: false,
+              };
+            },
+            unAuthorized: (unauthorized) => {
+              return {
+                retainICPMessage: String(
+                  `Unauthorized Access to Will Canister => ${unauthorized}`
+                ),
+                success: false,
+              };
+            },
+            message: (message) => {
+              return {
+                retainICPMessage: message,
+                success: false,
+              };
+            },
+          }),
+        };
+      }
+    default:
+      return {
+        tokenTickerNotSupported: true,
+      };
+  }
 }
-
+//----------------------ICRC Claim function------------------------------------
 export async function icrc_claim_will(_will: Will): Promise<ICRCClaimWill> {
   const will = _will;
   if (will.isClaimed) {

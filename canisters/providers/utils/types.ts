@@ -6,11 +6,12 @@ export type TestatorDetails = Record<{
   sex: string;
   birthDate: string;
   birthLocationCode: string;
-  deathDate: string;
-  deathLocationCode: string;
+  // deathDate: string;
+  // deathLocationCode: string;
 }>;
 
 export type CheckTestatorDetailsWithID = Record<{
+  errorMessage: Opt<string>;
   result: boolean;
   message: Opt<string>;
 }>;

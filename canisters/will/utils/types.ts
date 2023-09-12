@@ -58,6 +58,7 @@ export const tokenTickers = ["BTC"];
 //stable Memory Type for Will
 export type Will = Record<{
   willName: string;
+  willDescription: string;
   identifier: nat32;
   tokenTicker: string;
   testator: Principal;
@@ -76,6 +77,7 @@ export type ICRCCreateWill = Variant<{
 
 export type ICRCCreateWillArgs = Record<{
   willName: string;
+  willDescription: string;
   identifier: nat32;
   heirs: Principal;
   tokenTicker: string;
@@ -83,8 +85,17 @@ export type ICRCCreateWillArgs = Record<{
 }>;
 
 export type ICRCDeleteWill = Variant<{
-  success: boolean;
-  errorMessage: string;
+  isClaimed: boolean;
+  tokenTickerNotSupported: boolean;
+  retainError: string;
+  icpRetainResult: Record<{
+    retainICPMessage: string;
+    success: boolean;
+  }>;
+  ckbtcRetainResult: Record<{
+    retainCKBTCMessage: string;
+    success: boolean;
+  }>;
 }>;
 
 export type GetTestatorWills = Variant<{
@@ -118,6 +129,8 @@ export type ClaimWill = Variant<{
   unAuthorizedClaimer: boolean;
   claimError: boolean;
   willTypeNotSupported: boolean;
+  claimErrorFromProvider: string;
+  claimErrorFromCanisterCall: string;
 }>;
 
 export type ICRCClaimWill = Variant<{
@@ -141,4 +154,18 @@ export type DeleteWill = Variant<{
   willTypeNotSupported: boolean;
   willNotExists: boolean;
   icrc: ICRCDeleteWill;
+}>;
+
+export type ReportDeathByBase64Id = Variant<{
+  willNotExists: boolean;
+  testatorDetailsNotFound: string;
+  errorMessageFromCanisterCall: string;
+  errorMessageFromProviders: string;
+  result: boolean;
+}>;
+
+export type CheckDeathByIdentifier = Variant<{
+  willNotExists: boolean;
+  errorMessageFromCanisterCall: string;
+  result: boolean;
 }>;
