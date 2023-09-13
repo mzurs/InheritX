@@ -2,7 +2,8 @@
   "scripts": {
     "pretest": "AZLE_REBUILD=true ts-node --transpile-only --ignore=false test/unit/pretest.ts",
     "upgrade_canisters": "AZLE_REBUILD=true ts-node --transpile-only --ignore=false test/unit/upgradeCanisters.ts",
-    "unit_test_will": "AZLE_REBUILD=true ts-node --transpile-only --ignore=false test/unit/will/test.ts"
+    "unit_test_will": "AZLE_REBUILD=true ts-node --transpile-only --ignore=false test/unit/will/test.ts",
+    "unit_test_providers": "AZLE_REBUILD=true ts-node --transpile-only --ignore=false test/unit/providers/test.ts"
   },
   "dependencies": {
     "@dfinity/candid": "^0.19.2",

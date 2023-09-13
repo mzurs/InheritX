@@ -122,31 +122,57 @@ export async function check_testator_details_with_id(
     if (total === 1) {
       const responseFirstNames =
         parsedResponseBody.response.persons[0].name.first;
+      console.log(
+        "🚀 ~ file: providers.ts:124 ~ responseFirstNames:",
+        responseFirstNames[0],
+        responseFirstNames[1]
+      );
 
       const responseLastName = parsedResponseBody.response.persons[0].name.last;
+      // console.log(
+      //   "🚀 ~ file: providers.ts:128 ~ responseLastName:",
+      //   responseLastName
+      // );
 
       const responseSex = parsedResponseBody.response.persons[0].sex;
+      console.log("🚀 ~ file: providers.ts:131 ~ responseSex:", responseSex);
 
       const responseBirthDate =
         parsedResponseBody.response.persons[0].birth.date;
+      // console.log(
+      //   "🚀 ~ file: providers.ts:134 ~ responseBirthDate:",
+      //   responseBirthDate
+      // );
 
       const responseBirthLocationCode =
         parsedResponseBody.response.persons[0].birth.location.code;
+      // console.log(
+      //   "🚀 ~ file: providers.ts:138 ~ responseBirthLocationCode:",
+      //   responseBirthLocationCode
+      // );
 
       const responseDeathDate =
         parsedResponseBody.response.persons[0].death.date;
+      // console.log(
+      //   "🚀 ~ file: providers.ts:142 ~ responseDeathDate:",
+      //   responseDeathDate
+      // );
 
       const responseDeathLocationCode =
         parsedResponseBody.response.persons[0].death.location.code;
+      // console.log(
+      //   "🚀 ~ file: providers.ts:146 ~ responseDeathLocationCode:",
+      //   responseDeathLocationCode
+      // );
 
       if (
-        (check_first_names(testatorDetails.firstNames, responseFirstNames) &&
-          responseLastName == testatorDetails.lastName &&
-          responseBirthDate == testatorDetails.birthDate &&
-          responseBirthLocationCode == testatorDetails.birthLocationCode,
+        check_first_names(testatorDetails.firstNames, responseFirstNames) &&
+        responseLastName === testatorDetails.lastName &&
+        responseBirthDate === testatorDetails.birthDate &&
+        responseBirthLocationCode === testatorDetails.birthLocationCode &&
         responseDeathDate /*== testatorDetails.deathDate*/ &&
-          responseDeathLocationCode /*== testatorDetails.deathLocationCode*/ &&
-          responseSex == testatorDetails.sex)
+        responseDeathLocationCode /*== testatorDetails.deathLocationCode*/ &&
+        responseSex == testatorDetails.sex
       ) {
         testatorCache.insert(testatorPrincipal, true);
 
