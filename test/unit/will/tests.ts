@@ -9,7 +9,7 @@ import {
 } from "./functions/users";
 
 export function get_will_tests(
-  will_canister: ActorSubclass<_SERVICE>,
+  will: ActorSubclass<_SERVICE>,
   userA_will: ActorSubclass<_SERVICE>,
   userB_will: ActorSubclass<_SERVICE>
 ): Test[] {
