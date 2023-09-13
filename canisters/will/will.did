@@ -26,30 +26,51 @@ type ICRCCreateWill = variant {
 type ICRCCreateWillArgs = record {
   heirs : principal;
   willName : text;
+  willDescription : text;
   tokenTicker : text;
   identifier : nat32;
   amount : nat;
 };
-type ICRCDeleteWill = variant { errorMessage : text; success : bool };
+type ICRCDeleteWill = variant {
+  isClaimed : bool;
+  icpRetainResult : _InlineICRCDeleteWillIcpRetainResult;
+  retainError : text;
+  ckbtcRetainResult : _InlineICRCDeleteWillCkbtcRetainResult;
+  tokenTickerNotSupported : bool;
+};
 type ManualReply = variant {
+  result : bool;
+  errorMessageFromCanisterCall : text;
+  willNotExists : bool;
+};
+type ManualReply_1 = variant {
   icrc : ICRCClaimWill;
+  claimErrorFromProvider : text;
+  claimErrorFromCanisterCall : text;
   claimError : bool;
   willNotExists : bool;
   unAuthorizedClaimer : bool;
   willTypeNotSupported : bool;
 };
-type ManualReply_1 = variant {
+type ManualReply_2 = variant {
   icrc : ICRCCreateWill;
   userNotExists : bool;
   willTypeNotSupported : bool;
 };
-type ManualReply_2 = variant {
+type ManualReply_3 = variant {
   identifierUsed : bool;
   icrc : ICRCDeleteWill;
   unAuthorizedTestator : bool;
   willNotExists : bool;
   userNotExists : bool;
   willTypeNotSupported : bool;
+};
+type ManualReply_4 = variant {
+  result : bool;
+  errorMessageFromCanisterCall : text;
+  testatorDetailsNotFound : text;
+  errorMessageFromProviders : text;
+  willNotExists : bool;
 };
 type UpdateUserDetails = variant { success : bool; userNotExists : bool };
 type UserDetails = record {
@@ -67,6 +88,7 @@ type Will = record {
   timeStamp : nat64;
   testator : principal;
   isClaimed : bool;
+  willDescription : text;
   tokenTicker : text;
   identifier : nat32;
 };
@@ -77,6 +99,14 @@ type _InlineICRCClaimWillCkbtcClaimResult = record {
 type _InlineICRCClaimWillIcpClaimResult = record {
   claimICPMessage : text;
   success : bool;
+};
+type _InlineICRCDeleteWillCkbtcRetainResult = record {
+  retainCKBTCMessage : text;
+  success : bool;
+};
+type _InlineICRCDeleteWillIcpRetainResult = record {
+  success : bool;
+  retainICPMessage : text;
 };
 type userDetailsArgs = record {
   sex : text;
@@ -89,9 +119,10 @@ service : () -> {
   add_user_details : (userDetailsArgs) -> (AddUserDetails);
   bitcoin_get_balance : (text) -> (nat64);
   canisterBalance : () -> (nat64) query;
-  claim_will : (nat32, text) -> (ManualReply);
-  create_will : (CreateWillArgs, text) -> (ManualReply_1);
-  delete_will : (nat32, text) -> (ManualReply_2);
+  check_death_by_identifier : (nat32) -> (ManualReply) query;
+  claim_will : (nat32, text) -> (ManualReply_1);
+  create_will : (CreateWillArgs, text) -> (ManualReply_2);
+  delete_will : (nat32, text) -> (ManualReply_3);
   get_all_identifiers : () -> (vec record { nat32; principal }) query;
   get_all_wills : () -> (vec record { nat32; Will }) query;
   get_icrc_canister_id : () -> (text) query;
@@ -99,6 +130,7 @@ service : () -> {
   get_will_canister_id : () -> (principal) query;
   get_wills_for_heir : () -> (GetHeirWills) query;
   get_wills_for_testator : () -> (GetTestatorWills) query;
+  report_death_by_base64Id : (nat32, text) -> (ManualReply_4);
   request_random_will_identifier : () -> (nat32);
   set_icrc_canister_id : (text) -> (text);
   update_user_details : (userDetailsArgs) -> (UpdateUserDetails);

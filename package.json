@@ -1,9 +1,12 @@
 {
   "scripts": {
-    "pretest": "AZLE_REBUILD=true ts-node --transpile-only --ignore=false test/pretest.ts",
-    "test": "AZLE_REBUILD=true ts-node --transpile-only --ignore=false test/test.ts"
+    "pretest": "AZLE_REBUILD=true ts-node --transpile-only --ignore=false test/unit/pretest.ts",
+    "upgrade_canisters": "AZLE_REBUILD=true ts-node --transpile-only --ignore=false test/unit/upgradeCanisters.ts",
+    "unit_test_will": "AZLE_REBUILD=true ts-node --transpile-only --ignore=false test/unit/will/test.ts"
   },
   "dependencies": {
+    "@dfinity/candid": "^0.19.2",
+    "@dfinity/identity": "^0.19.2",
     "azle": "0.17.1",
     "decode-utf8": "^1.0.1"
   },

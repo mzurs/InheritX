@@ -24,7 +24,7 @@
         "node_compatibility": true
       },
       "opt_level": "1",
-      "env": ["ICRC_CANISTER_ID"]
+      "env": ["ICRC_CANISTER_ID","PROVIDERS_CANISTER_ID"]
     },
 
     "icrc": {
