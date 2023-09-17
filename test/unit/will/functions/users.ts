@@ -5,7 +5,7 @@ import {
   _SERVICE,
 } from "../../../../dfx_generated/will/will.did";
 import { createActor } from "../../../../dfx_generated/will";
-import { createRandomIndentity } from "../../utils/utils";
+import { create_actor } from "../../utils/utils";
 
 //create users for will canister
 export async function createUsers(
@@ -40,8 +40,10 @@ export async function createUsers(
 //function to create user with same principal
 //create users for will canister
 export async function reCreateUsers(
-  userA_will: ActorSubclass<_SERVICE>
 ): Promise<AzleResult<boolean, string>> {
+
+  const userA_will = await create_actor("will");
+
   //User A details
   const userADetailsArgs = {
     firstNames: ["Muhammad ", "Zohaib"],
@@ -51,6 +53,10 @@ export async function reCreateUsers(
     birthLocationCode: "75950",
   };
 
+  //creating user first
+  await userA_will.add_user_details(userADetailsArgs);
+
+  //then recreating with same object
   const resultA = await userA_will.add_user_details(userADetailsArgs);
   if ("userExists" in resultA) {
     return {
@@ -64,10 +70,12 @@ export async function reCreateUsers(
 }
 
 //function to update users
-export async function update_users(
-  userA_will: ActorSubclass<_SERVICE>,
-  userB_will: ActorSubclass<_SERVICE>
-) {
+export async function update_users() {
+
+  //creating an actors first
+  const userA_will = await create_actor("will");
+  const userB_will = await create_actor("will");
+
   //User A details
   const userADetailsArgs = {
     firstNames: ["Muhammad ", "Zohaib"],
@@ -85,6 +93,9 @@ export async function update_users(
     birthDate: "20090910",
     birthLocationCode: "75950",
   };
+
+  //creating user first
+  await createUsers(userA_will, userB_will);
 
   const updateA: UpdateUserDetails = await userA_will.update_user_details(
     userADetailsArgs
@@ -114,7 +125,7 @@ export async function update_users_without_create_user(): Promise<
     birthLocationCode: "75950",
   };
 
-  const unAuthorizedUser = await createRandomIndentity(createActor);
+  const unAuthorizedUser = await create_actor("will");
 
   const updateUser: UpdateUserDetails =
     await unAuthorizedUser.update_user_details(userADetailsArgs);
