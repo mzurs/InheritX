@@ -6,6 +6,34 @@ async function pretest() {
 
   //Deploying Canister In Sequence
 
+  //================================== 3.  CKBTC Ledger Deployment================================================
+
+  execSync(`bash scripts/dev/ckbtc/ckbtc_ledger.sh || true`, {
+    stdio: "inherit",
+  });
+
+  execSync(`bash scripts/dev/ckbtc/ckbtc_deploy.sh`, {
+    stdio: "inherit",
+  });
+
+  execSync(`dfx generate ckbtc_ledger`, {
+    stdio: "inherit",
+  });
+  //================================== 3.  ICP  Ledger Deployment===================================================
+
+  execSync(`bash scripts/dev/icp/icp_ledger.sh || true`, {
+    stdio: "inherit",
+  });
+
+  execSync(`bash scripts/dev/icp/icp_deploy.sh`, {
+    stdio: "inherit",
+  });
+
+  execSync(`dfx generate icp_ledger`, {
+    stdio: "inherit",
+  });
+  // execSync(`bash scripts/dev/icp/icp_transfer.sh`, { stdio: "inherit" });
+
   //================================== 3.  Providers  Canister Deployment===========================================
 
   execSync(
@@ -20,7 +48,7 @@ async function pretest() {
     stdio: "inherit",
   });
 
-  //================================== 3.  Will Canister Deployment===========================================
+  //================================== 3.  ICRC Canister Deployment===========================================
 
   execSync(
     `dfx deploy icrc --specified-id be2us-64aaa-aaaaa-qaabq-cai

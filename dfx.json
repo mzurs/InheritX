@@ -50,7 +50,7 @@
         }
       },
       "declarations": {
-        "output": "dfx_generated/icrc",
+        "output": "dfx_generated/ckbtc/ckbtc",
         "node_compatibility": true
       }
     },
@@ -65,7 +65,7 @@
         }
       },
       "declarations": {
-        "output": "dfx_generated/icrc",
+        "output": "dfx_generated/icp/icp",
         "node_compatibility": true
       }
     }

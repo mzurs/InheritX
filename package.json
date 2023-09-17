@@ -3,16 +3,19 @@
     "pretest": "AZLE_REBUILD=true ts-node --transpile-only --ignore=false test/unit/pretest.ts",
     "upgrade_canisters": "AZLE_REBUILD=true ts-node --transpile-only --ignore=false test/unit/upgradeCanisters.ts",
     "unit_test_will": "AZLE_REBUILD=true ts-node --transpile-only --ignore=false test/unit/will/test.ts",
-    "unit_test_providers": "AZLE_REBUILD=true ts-node --transpile-only --ignore=false test/unit/providers/test.ts"
+    "unit_test_providers": "AZLE_REBUILD=true ts-node --transpile-only --ignore=false test/unit/providers/test.ts",
+    "unit_test_icrc": "AZLE_REBUILD=true ts-node --transpile-only --ignore=false test/unit/icrc/test.ts"
   },
   "dependencies": {
     "@dfinity/candid": "^0.19.2",
     "@dfinity/identity": "^0.19.2",
+    "@dfinity/nns": "^0.16.7",
     "azle": "0.17.1",
     "decode-utf8": "^1.0.1"
   },
   "devDependencies": {
     "@dfinity/agent": "0.11.1",
+    "bip39": "^3.1.0",
     "ts-node": "10.9.1",
     "typescript": "5.2.2"
   }

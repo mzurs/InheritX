@@ -6,7 +6,44 @@ async function pretest() {
 
   //Deploying Canister In Sequence
 
+  //================================== 3.  CKBTC Ledger Deployment================================================
+
+  execSync(`dfx canister uninstall-code ckbtc_ledger || true`, {
+    stdio: "inherit",
+  });
+
+  execSync(`bash scripts/dev/ckbtc/ckbtc_ledger.sh || true`, {
+    stdio: "inherit",
+  });
+
+  execSync(`bash scripts/dev/ckbtc/ckbtc_deploy.sh`, {
+    stdio: "inherit",
+  });
+
+  execSync(`dfx generate ckbtc_ledger`, {
+    stdio: "inherit",
+  });
+  //================================== 3.  ICP  Ledger Deployment===================================================
+
+  execSync(`dfx canister uninstall-code icp_ledger || true`, {
+    stdio: "inherit",
+  });
+
+  execSync(`bash scripts/dev/icp/icp_ledger.sh || true`, {
+    stdio: "inherit",
+  });
+
+  execSync(`bash scripts/dev/icp/icp_deploy.sh`, {
+    stdio: "inherit",
+  });
+
+  execSync(`dfx generate icp_ledger`, {
+    stdio: "inherit",
+  });
+  // execSync(`bash scripts/dev/icp/icp_transfer.sh`, { stdio: "inherit" });
+
   //================================== 3.  Providers  Canister Deployment===========================================
+
   execSync(`dfx canister uninstall-code providers || true`, {
     stdio: "inherit",
   });
@@ -23,7 +60,8 @@ async function pretest() {
     stdio: "inherit",
   });
 
-  //================================== 3.  Will Canister Deployment===========================================
+  //================================== 3.  ICRC Canister Deployment===========================================
+
   execSync(`dfx canister uninstall-code icrc || true`, {
     stdio: "inherit",
   });
@@ -41,6 +79,7 @@ async function pretest() {
   });
 
   //================================== 4.  Will Canister Deployment===========================================
+
   execSync(`dfx canister uninstall-code will || true`, {
     stdio: "inherit",
   });

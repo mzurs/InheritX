@@ -21,18 +21,22 @@ export function get_providers_tests(
     {
       name: "Check Death API with Correct Id",
       test: async () => {
+        await new Promise((resolve) => setTimeout(resolve, 5000));
         return await check_testator_details_with_correct_id(providers);
       },
     },
     {
       name: "Check Death API with Wrong Id",
       test: async () => {
+        await new Promise((resolve) => setTimeout(resolve, 5000));
+
         return await check_testator_details_with_wrong_id(providers);
       },
     },
     {
       name: "Check Death API with Wrong Details",
       test: async () => {
+        await new Promise((resolve) => setTimeout(resolve, 5000));
         return await check_testator_details_with_wrong_details(providers);
       },
     },
