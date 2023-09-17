@@ -83,7 +83,7 @@ export async function compareIcrcCanistersIdentifierBalance(
     Principal.fromText(icrcCanisterId),
     identifier
   );
-  // console.log("🚀 ~ file: icp.ts:88 ~ balance:", balance);
+  console.log("🚀 ~ file: icp.ts:88 ~ balance:", balance);
 
   if ("Ok" in balance) {
     return {

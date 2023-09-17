@@ -8,6 +8,12 @@ import {
   transferFromICRC,
   transferICPToICRC,
 } from "./functions/icp";
+import {
+  compareIcrcCanistersIdentifierBalanceckBTC,
+  compareckBTCBalance,
+  transferFromICRCckBTC,
+  transferckBTCToICRC,
+} from "./functions/ckbtc";
 
 export function get_icrc_tests(
   icrc: ActorSubclass<_SERVICE>,
@@ -19,6 +25,8 @@ export function get_icrc_tests(
   //--------------------------The Test Should be run in sequence in order to be passed
   return [
     {
+      //==================================ICP=====================================================
+
       // set user A principal a valid principal to initate call to ICRC methods.
       // Later it'll be replaced by will canister Id when we perform stage testing
       name: "Set icrc Canister Id From user A ICRC identity ",
@@ -43,7 +51,7 @@ export function get_icrc_tests(
       },
     },
     {
-      name: "Transfer 1 ICP from User A Identifier Derived Account",
+      name: "Transfer 1 ICP from User A Identifier ICRC Derived Account",
       test: async () => {
         const identifier: number = 172_696_504;
         return await transferICPToICRC(userAIdentity, identifier, 1);
@@ -86,6 +94,58 @@ export function get_icrc_tests(
       test: async () => {
         const identifier: number = 172_696_504;
         return await compareIcrcCanistersIdentifierBalance(identifier, 0);
+      },
+    },
+
+    //===========================================CKBTC=================================================
+
+    {
+      name: `PrincipalA => ${userAIdentity
+        .getPrincipal()
+        .toText()} Balance should be 1 ckBTC`,
+      test: async () => {
+        return await compareckBTCBalance(userAIdentity.getPrincipal(), 1);
+      },
+    },
+    {
+      name: "Transfer 1 ckBTC from User A Identifier Derived ICRC Canister Principal",
+      test: async () => {
+        const identifier: number = 172_696_504;
+        return await transferckBTCToICRC(userAIdentity, identifier, 1);
+      },
+    },
+    {
+      // After transferring the amount shoud be 0
+      name: `PrincipalA => ${userAIdentity
+        .getPrincipal()
+        .toText()} Balance should be 0 ckBTC`,
+      test: async () => {
+        return await compareckBTCBalance(userAIdentity.getPrincipal(), 0);
+      },
+    },
+
+    //Pausing this test as right now Canisrter subaccount is not being used for ckBTC assets
+
+    // {
+    //   name: `Canister Principal should contain 0.999999 ckBTC`,
+    //   test: async () => {
+    //     // const identifier: number = 172_696_504;
+    //     return await compareIcrcCanistersIdentifierBalanceckBTC(9999990);
+    //   },
+    // },
+    {
+      name: `Transfer From ICRC Canister to Principal=> ${userBIdentity
+        .getPrincipal()
+        .toText()} `,
+      test: async () => {
+        const identifier = 172_696_504;
+        const userBPrinicipal = userBIdentity.getPrincipal();
+        return await transferFromICRCckBTC(
+          userA_icrc,
+          userBPrinicipal,
+          identifier,
+          1
+        );
       },
     },
   ];

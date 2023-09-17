@@ -17,9 +17,17 @@ export async function pretestIcrc(args: PretestParams) {
     stdio: "inherit",
   });
 
-  // Send the amount from default dfx identity to User Principal A
+  // Send the ICP from default dfx identity to User Principal A
   execSync(
     `dfx canister call icp_ledger send_dfx '(record {memo=2 ; amount= record {e8s=100_000_000}; fee= record {e8s=10_000} ; to="'$(dfx ledger account-id --of-principal ${args.principalA})'"  })' `,
+    {
+      stdio: "inherit",
+    }
+  );
+  // Send the ckBTC from default dfx principal to User Principal A
+  execSync(
+    `dfx canister call ckbtc_ledger icrc1_transfer \
+    '(record {  to = record {owner=principal  "'${args.principalA}'"}; amount= 100_000_000 })' `,
     {
       stdio: "inherit",
     }
