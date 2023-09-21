@@ -19,6 +19,7 @@ import {
   CreateWillArgs,
   ClaimWill,
   DeleteWill,
+  ClaimDeathOfTestatorByBase64ID,
 } from "./utils/types";
 import {
   add_user_details,
@@ -63,36 +64,52 @@ export let isIdentifierUsed = new StableBTreeMap<nat32, boolean>(6, 32, 10);
 
 //-------------------------------------------------------FUNCTIONS---------------------------------------------
 
+$query;
+export function get_all_willsT(): Vec<Tuple<[Principal, Vec<number>]>> {
+  return testatorMappingToWillIdentifier.items();
+}
+
+$query;
+export function get_willsT(principal: Principal): Vec<number> {
+  return match(testatorMappingToWillIdentifier.get(principal), {
+    Some: (wills) => wills,
+    None: (none) => [],
+  });
+}
+
 // add will identifier to testators and heirs mappings
 export function add_identifier_to_mapping(
   testator: Principal,
   heirs: Principal,
   identifier: nat32
 ): void {
-  if (testatorMappingToWillIdentifier.isEmpty()) {
-    testatorMappingToWillIdentifier.insert(testator, [identifier]);
-  } else {
-    const identifiers = testatorMappingToWillIdentifier.get(testator);
-    match(identifiers, {
-      Some: (identifiers) => {
-        const updatedVec = [...identifiers, identifier];
-        testatorMappingToWillIdentifier.insert(testator, updatedVec);
-      },
-      None: (none) => none,
-    });
-  }
-  if (heirsMappingToWillIdentifier.isEmpty()) {
-    heirsMappingToWillIdentifier.insert(heirs, [identifier]);
-  } else {
-    const identifiers = heirsMappingToWillIdentifier.get(heirs);
-    match(identifiers, {
-      Some: (identifiers) => {
-        const updatedVec = [...identifiers, identifier];
-        heirsMappingToWillIdentifier.insert(heirs, updatedVec);
-      },
-      None: (none) => none,
-    });
-  }
+  // if (testatorMappingToWillIdentifier.isEmpty()) {
+  //   testatorMappingToWillIdentifier.insert(testator, [identifier]);
+  // } else {
+  const identifiersT = testatorMappingToWillIdentifier.get(testator);
+  console.log("🚀 ~ file: will.ts:89 ~ identifiersT:", identifiersT);
+  match(identifiersT, {
+    Some: (identifiers) => {
+      const updatedVec = [...identifiers, identifier];
+      testatorMappingToWillIdentifier.insert(testator, updatedVec);
+    },
+    None: (none) =>
+      testatorMappingToWillIdentifier.insert(testator, [identifier]),
+  });
+  // }
+  // if (heirsMappingToWillIdentifier.isEmpty()) {
+  //   heirsMappingToWillIdentifier.insert(heirs, [identifier]);
+  // } else {
+  const identifiersH = heirsMappingToWillIdentifier.get(heirs);
+  console.log("🚀 ~ file: will.ts:103 ~ identifiersH:", identifiersH);
+  match(identifiersH, {
+    Some: (identifiers) => {
+      const updatedVec = [...identifiers, identifier];
+      heirsMappingToWillIdentifier.insert(heirs, updatedVec);
+    },
+    None: (none) => heirsMappingToWillIdentifier.insert(heirs, [identifier]),
+  });
+  // }
   return;
 }
 
@@ -147,11 +164,17 @@ export function get_wills_for_testator(): GetTestatorWills {
   }
   const testatorWillsIdentifiersOpt: Opt<Vec<nat32>> =
     testatorMappingToWillIdentifier.get(ic.caller());
+
+  console.log(
+    "🚀 ~ file: will.ts:149 ~ get_wills_for_testator ~ testatorWillsIdentifiersOpt:",
+    testatorWillsIdentifiersOpt
+  );
+
   const testatorWillsIdentifiers = match(testatorWillsIdentifiersOpt, {
     Some: (identifiers) => identifiers,
-    None: (none) => none,
+    None: () => null,
   });
-  if (testatorWillsIdentifiers == null) {
+  if (testatorWillsIdentifiers === null) {
     return {
       noWillsExists: true,
     };
@@ -403,6 +426,44 @@ export async function claim_will(
   }
 }
 
+// export async function claim_death_of_testator_by_base64Id(
+//   base64Id: string,
+//   identifier: number
+// ): Promise<ClaimDeathOfTestatorByBase64ID> {
+//   const will = wills.containsKey(identifier);
+//   if (!will) {
+//     return {
+//       noWillExists: true,
+//     };
+//   } else {
+//     const willDetailsOpt = wills.get(identifier);
+
+//     const willDetails = match(willDetailsOpt, {
+//       Some: (will) => will,
+//       None: () => null,
+//     });
+//     if(!willDetails){
+//       return {
+//         errorMessage:JSON.stringify(willDetails)
+//       }
+//     }else{
+//       const testatorPrincipal=willDetails.testator;
+
+//       const userDetailsOpt=users.get(testatorPrincipal);
+//       const userDetails=match(userDetailsOpt,{
+//         Some:(user)=>user,
+//         None:()=>null
+//       })
+//       if(!userDetails){
+//         return {
+//           errorMessage:JSON.stringify(userDetails)
+//         }
+//       }else{
+//         const 
+//       }
+//     }
+//   }
+// }
 //===================================================EXPORTS==================================================
 export {
   //users

@@ -169,3 +169,8 @@ export type CheckDeathByIdentifier = Variant<{
   errorMessageFromCanisterCall: string;
   result: boolean;
 }>;
+
+export type ClaimDeathOfTestatorByBase64ID = Variant<{
+  noWillExists: boolean;
+  errorMessage: string;
+}>;

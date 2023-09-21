@@ -12,7 +12,7 @@ export const providers = new Provider(
 //----------------------------------------------Query Methods-------------------------------------------------------
 
 // this function is used to check whether user already died and data stored in provider canister
-$query;
+$update;
 export async function check_death_by_identifier(
   identifier: nat32
 ): Promise<CheckDeathByIdentifier> {
