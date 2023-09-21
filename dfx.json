@@ -57,7 +57,7 @@
 
     "icp_ledger": {
       "type": "custom",
-      "candid": "canisters/icrc/ledgers/icp/ledger.public.did",
+      "candid": "canisters/icrc/ledgers/icp/ledger.did",
       "wasm": "canisters/icrc/ledgers/icp/ledger.wasm",
       "remote": {
         "id": {
