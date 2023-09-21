@@ -40,10 +40,10 @@ export async function transferICPToICRC(
   );
   const identifierAccount =
     await actorIcrc.get_canister_binary_subaccount_from_identifier(indentifier);
-  // console.log(
-  //   "🚀 ~ file: icp.ts:32 ~ transferICPToICRC ~ identifierAccount:",
-  //   identifierAccount
-  // );
+ 
+    const identifierAccountHex =
+    await actorIcrc.get_canister_hex_subaccount_from_identifier(indentifier);
+     console.log("🚀 ~ file: icp.ts:45 ~ identifierAccountHex:", identifierAccountHex)
 
   //Creating userA actor for ICP_ledger with Identity
   const actorIcpLedger: ActorSubclass<_ICPLedger> =
@@ -59,7 +59,7 @@ export async function transferICPToICRC(
   };
 
   const transfer = await actorIcpLedger.transfer(transferArgs);
-  // console.log("🚀 ~ file: icp.ts:65 ~ transfer:", transfer)
+  console.log("🚀 ~ file: icp.ts:65 ~ transfer:", transfer)
 
   if ("Ok" in transfer) {
     return { Ok: true };

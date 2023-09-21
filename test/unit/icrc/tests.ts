@@ -9,11 +9,11 @@ import {
   transferICPToICRC,
 } from "./functions/icp";
 import {
-  compareIcrcCanistersIdentifierBalanceckBTC,
   compareckBTCBalance,
   transferFromICRCckBTC,
   transferckBTCToICRC,
 } from "./functions/ckbtc";
+import { randomIdentifier } from "../../utils/utils";
 
 export function get_icrc_tests(
   icrc: ActorSubclass<_SERVICE>,
@@ -22,6 +22,7 @@ export function get_icrc_tests(
   userB_icrc: ActorSubclass<_SERVICE>,
   userBIdentity: Identity
 ): Test[] {
+  const identifier = randomIdentifier();
   //--------------------------The Test Should be run in sequence in order to be passed
   return [
     {
@@ -53,7 +54,6 @@ export function get_icrc_tests(
     {
       name: "Transfer 1 ICP from User A Identifier ICRC Derived Account",
       test: async () => {
-        const identifier: number = 172_696_504;
         return await transferICPToICRC(userAIdentity, identifier, 1);
       },
     },
@@ -70,9 +70,8 @@ export function get_icrc_tests(
       },
     },
     {
-      name: `Canister Subaccount With Identifier ${"172_696_504"} should contain 0.9999 ICP`,
+      name: `Canister Subaccount With Identifier ${identifier} should contain 0.9999 ICP`,
       test: async () => {
-        const identifier: number = 172_696_504;
         return await compareIcrcCanistersIdentifierBalance(
           identifier,
           1 - 0.0001
@@ -84,15 +83,13 @@ export function get_icrc_tests(
         .getPrincipal()
         .toText()} `,
       test: async () => {
-        const identifier = 172_696_504;
         const userBPrinicipal = userBIdentity.getPrincipal();
         return await transferFromICRC(userA_icrc, userBPrinicipal, identifier);
       },
     },
     {
-      name: `Canister Subaccount With Identifier ${"172_696_504"} should contain 0 ICP`,
+      name: `Canister Subaccount With Identifier ${identifier} should contain 0 ICP`,
       test: async () => {
-        const identifier: number = 172_696_504;
         return await compareIcrcCanistersIdentifierBalance(identifier, 0);
       },
     },
@@ -110,7 +107,6 @@ export function get_icrc_tests(
     {
       name: "Transfer 1 ckBTC from User A Identifier Derived ICRC Canister Principal",
       test: async () => {
-        const identifier: number = 172_696_504;
         return await transferckBTCToICRC(userAIdentity, identifier, 1);
       },
     },
@@ -138,7 +134,6 @@ export function get_icrc_tests(
         .getPrincipal()
         .toText()} `,
       test: async () => {
-        const identifier = 172_696_504;
         const userBPrinicipal = userBIdentity.getPrincipal();
         return await transferFromICRCckBTC(
           userA_icrc,

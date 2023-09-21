@@ -1,17 +1,28 @@
-import { ActorSubclass } from "@dfinity/agent";
+import { ActorSubclass, Identity } from "@dfinity/agent";
 import { AzleResult } from "azle/test";
 import {
   UpdateUserDetails,
   _SERVICE,
 } from "../../../../dfx_generated/will/will.did";
-import { createActor } from "../../../../dfx_generated/will";
-import { create_actor } from "../../utils/utils";
+import { createActor } from "../../../utils/actors";
+import { createRandomIdentity } from "../../../utils/utils";
+// import { createActor } from "../../../../dfx_generated/will";
+// import { create_actor } from "../../utils/utils";
 
 //create users for will canister
 export async function createUsers(
-  userA_will: ActorSubclass<_SERVICE>,
-  userB_will: ActorSubclass<_SERVICE>
+  userAIdentity: Identity,
+  userBIdentity: Identity
 ): Promise<AzleResult<boolean, string>> {
+  const actor_will_userA: ActorSubclass<_SERVICE> = await createActor(
+    "will",
+    userAIdentity
+  );
+  const actor_will_userB: ActorSubclass<_SERVICE> = await createActor(
+    "will",
+    userBIdentity
+  );
+
   //User A details
   const userADetailsArgs = {
     firstNames: ["Muhammad ", "Zohaib"],
@@ -30,8 +41,12 @@ export async function createUsers(
     birthLocationCode: "75950",
   };
 
-  const resultA: any = await userA_will.add_user_details(userADetailsArgs);
-  const resultB: any = await userB_will.add_user_details(userBDetailsArgs);
+  const resultA: any = await actor_will_userA.add_user_details(
+    userADetailsArgs
+  );
+  const resultB: any = await actor_will_userB.add_user_details(
+    userBDetailsArgs
+  );
   return {
     Ok: resultA.success === true && resultB.success === true,
   };
@@ -39,10 +54,8 @@ export async function createUsers(
 
 //function to create user with same principal
 //create users for will canister
-export async function reCreateUsers(
-): Promise<AzleResult<boolean, string>> {
-
-  const userA_will = await create_actor("will");
+export async function reCreateUsers(): Promise<AzleResult<boolean, string>> {
+  const userA_will = await createActor("will");
 
   //User A details
   const userADetailsArgs = {
@@ -70,12 +83,19 @@ export async function reCreateUsers(
 }
 
 //function to update users
-export async function update_users() {
-
+export async function update_users(
+  userAIdentity: Identity,
+  userBIdentity: Identity
+) {
   //creating an actors first
-  const userA_will = await create_actor("will");
-  const userB_will = await create_actor("will");
-
+  const actor_will_userA: ActorSubclass<_SERVICE> = await createActor(
+    "will",
+    userAIdentity
+  );
+  const actor_will_userB: ActorSubclass<_SERVICE> = await createActor(
+    "will",
+    userBIdentity
+  );
   //User A details
   const userADetailsArgs = {
     firstNames: ["Muhammad ", "Zohaib"],
@@ -95,12 +115,14 @@ export async function update_users() {
   };
 
   //creating user first
-  await createUsers(userA_will, userB_will);
+  await createUsers(userAIdentity, userBIdentity);
 
-  const updateA: UpdateUserDetails = await userA_will.update_user_details(
+  const updateA: UpdateUserDetails = await actor_will_userA.update_user_details(
     userADetailsArgs
   );
-  const updateB: any = await userB_will.update_user_details(userBDetailsArgs);
+  const updateB: any = await actor_will_userB.update_user_details(
+    userBDetailsArgs
+  );
 
   if ("success" in updateA && "success" in updateB) {
     return {
@@ -125,7 +147,8 @@ export async function update_users_without_create_user(): Promise<
     birthLocationCode: "75950",
   };
 
-  const unAuthorizedUser = await create_actor("will");
+  const newIdentity=createRandomIdentity()
+  const unAuthorizedUser = await createActor("will",newIdentity);
 
   const updateUser: UpdateUserDetails =
     await unAuthorizedUser.update_user_details(userADetailsArgs);

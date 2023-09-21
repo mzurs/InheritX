@@ -5,7 +5,6 @@ import {
 } from "../../../../dfx_generated/providers/providers.did";
 import { AzleResult } from "azle/test";
 import { Principal } from "azle";
-import { CheckTestatorDetailsWithID } from "../../../../canisters/providers/utils/types";
 
 export async function check_testator_death_with_wrong_principal(
   providers: ActorSubclass<_SERVICE>
