@@ -76,7 +76,7 @@ echo -e "\n.................Creating ICRC WIll FUnctions....."
 echo "Creating ICRC Will from UserA to UserB with Identifier " $Identifier
 dfx identity use userA
 dfx canister call will create_will "( variant{ icrc=record { willName= \"Transfer_to_UserB\" ;
-  identifier= $Identifier; heirs= principal \"$userB\" ;  tokenTicker = \"ICP\"; amount = 100; }}, \"ICRC\")"
+ willDescription= \"Description\" ; identifier= $Identifier; heirs= principal \"$userB\" ;  tokenTicker = \"ICP\"; amount = 100; }}, \"ICRC\")"
 
 # Get All Wills Created By Testator
 echo -e "\nList of All Wills Created By Testator....."
@@ -108,7 +108,7 @@ dfx canister call will get_wills_for_heir '()'
 echo -e "\n Creating an ICRC will with duplicate Identifier"
 dfx identity use userA
 dfx canister call will create_will "( variant{ icrc= record { willName= \"Transfer_to_UserB\" ;
-  identifier= 178_383_194; heirs= principal \"$userB\" ;  tokenTicker = \"ICP\"; amount = 100;} },\"ICRC\")"
+ willDescription= \"Description\";  identifier= 178_383_194; heirs= principal \"$userB\" ;  tokenTicker = \"ICP\"; amount = 100;} },\"ICRC\")"
 
 # Delete a will from unauthorized user
 echo -e "\n Deleting  UserA Will From UserB Principal"
@@ -123,14 +123,14 @@ echo "Random Identifier = " $Identifier
 echo -e "\n Creating a new will with wrong supported Assets Type"
 dfx identity use userA
 dfx canister call will create_will "( variant{ icrc=record { willName= \"Transfer_to_UserB\" ;
-  identifier= $Identifier ; heirs= principal \"$userB\" ;  tokenTicker = \"IICP\"; amount = 101; }} , \"ICRC\")"
+   willDescription= \"Description\"; identifier= $Identifier ; heirs= principal \"$userB\" ;  tokenTicker = \"IICP\"; amount = 101; }} , \"ICRC\")"
 
 # Creating and Claiming a will for an Identifier
 
 echo -e "\n Creating a new will with wrong supported Assets Type"
 dfx identity use userA
 dfx canister call will create_will "( variant{ icrc=record { willName= \"Transfer_to_UserB\" ;
-  identifier= $Identifier ; heirs= principal \"$userB\" ;  tokenTicker = \"ICP\"; amount = 101; }} , \"ICRC\")"
+  willDescription= \"Description\"; identifier= $Identifier ; heirs= principal \"$userB\" ;  tokenTicker = \"ICP\"; amount = 101; }} , \"ICRC\")"
 
 # Creating a will using CKBTC Asset for User B
 echo -e "\n Creating a Will using CKBTC for User B"
@@ -142,7 +142,7 @@ echo -e "\n.................Creating ICRC WIll Functions....."
 echo "Creating ICRC Will from UserA to UserB with Identifier " $Identifier
 dfx identity use userA
 dfx canister call will create_will "( variant{ icrc=record { willName= \"Transfer_to_UserB\" ;
-  identifier= $Identifier; heirs= principal \"$userB\" ;  tokenTicker = \"ckBTC\"; amount = 100_000_000; }}, \"ICRC\")"
+  willDescription= \"Description\"; identifier= $Identifier; heirs= principal \"$userB\" ;  tokenTicker = \"ckBTC\"; amount = 100_000_000; }}, \"ICRC\")"
 
 # Swithcing to default in the end of script
 

@@ -1,10 +1,11 @@
 {
   "scripts": {
-    "pretest": "AZLE_REBUILD=true ts-node --transpile-only --ignore=false test/unit/pretest.ts",
-    "upgrade_canisters": "AZLE_REBUILD=true ts-node --transpile-only --ignore=false test/unit/upgradeCanisters.ts",
+    "pretest": "AZLE_REBUILD=true ts-node --transpile-only --ignore=false test/pretest.ts",
+    "upgrade_canisters": "AZLE_REBUILD=true ts-node --transpile-only --ignore=false test/upgradeCanisters.ts",
     "unit_test_will": "AZLE_REBUILD=true ts-node --transpile-only --ignore=false test/unit/will/test.ts",
     "unit_test_providers": "AZLE_REBUILD=true ts-node --transpile-only --ignore=false test/unit/providers/test.ts",
-    "unit_test_icrc": "AZLE_REBUILD=true ts-node --transpile-only --ignore=false test/unit/icrc/test.ts"
+    "unit_test_icrc": "AZLE_REBUILD=true ts-node --transpile-only --ignore=false test/unit/icrc/test.ts",
+    "i_test":"AZLE_REBUILD=true ts-node --transpile-only --ignore=false test/integration/will/test.ts"
   },
   "dependencies": {
     "@dfinity/candid": "^0.19.2",
