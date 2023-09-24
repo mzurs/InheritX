@@ -7,10 +7,10 @@ import { ActorSubclass, Identity } from "@dfinity/agent";
 import {
   TransferArg,
   _SERVICE as _ckBTCLedger,
-} from "../../../../dfx_generated/ckbtc/ckbtc/ckbtc_ledger.did";
+} from "../../../../declarations/ckbtc/ckbtc/ckbtc_ledger.did";
 import { AzleResult, getCanisterId } from "azle/test";
 import { humanToE8s } from "../../../utils/utils";
-import { _SERVICE as _ICRC } from "../../../../dfx_generated/icrc/icrc.did";
+import { _SERVICE as _ICRC } from "../../../../declarations/icrc/icrc.did";
 
 // compare the ckBTC Balance of a Principal with a pre-image value
 export async function compareckBTCBalance(

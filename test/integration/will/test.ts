@@ -1,10 +1,10 @@
 import { getCanisterId, runTests } from "azle/test";
-// import { createActor } from "../../../dfx_generated/will";
+// import { createActor } from "../../../declarations/will";
 import { Ed25519KeyIdentity } from "@dfinity/identity";
 import { pretestIcrc } from "./pretest";
 import { get_will_tests } from "./tests";
 import { ActorSubclass, Identity } from "@dfinity/agent";
-import { _SERVICE as _WILL } from "../../../dfx_generated/will/will.did";
+import { _SERVICE as _WILL } from "../../../declarations/will/will.did";
 import { createActor } from "../../utils/actors";
 
 const getIdentifier = async (identity: Identity): Promise<number> => {
@@ -27,7 +27,7 @@ const userB_Identity = async () => {
   return { userBIdentity };
 };
 
- async function runWill() {
+async function runWill() {
   const { userAIdentity } = await userA_Identity();
   // console.log("🚀 ~ file: test.ts:32 ~ runWill ~ userAIdentity:", userAIdentity.getPrincipal().toText())
   const { userBIdentity } = await userB_Identity();
@@ -41,8 +41,6 @@ const userB_Identity = async () => {
 
   const identifiers = await getIdentifier(userAIdentity);
 
-   runTests(
-    await get_will_tests(identifiers, userAIdentity, userBIdentity)
-  );
+  runTests(await get_will_tests(identifiers, userAIdentity, userBIdentity));
 }
 runWill();

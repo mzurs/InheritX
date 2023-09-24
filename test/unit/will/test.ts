@@ -1,5 +1,5 @@
 import { getCanisterId, runTests } from "azle/test";
-import { createActor } from "../../../dfx_generated/will";
+import { createActor } from "../../../declarations/will";
 import { get_will_tests } from "./tests";
 import { Ed25519KeyIdentity } from "@dfinity/identity";
 // import { generateMnemonic, mnemonicToSeedSync } from "bip39";
@@ -28,33 +28,22 @@ function stringToUint8Array(str: string): Uint8Array {
 // const USERB_MNEMONIC =
 //   "knock young raccoon stadium embrace upon mean impulse bulb coconut view portion also more mom endorse draft village debris drip rebel aware fossil ice";
 
-
 const userA_will = async () => {
-  //generating identity for user A 
-  const userAIdentity =  Ed25519KeyIdentity.generate(
-  );
-
+  //generating identity for user A
+  const userAIdentity = Ed25519KeyIdentity.generate();
 
   return { userAIdentity };
 };
 const userB_will = async () => {
-  //generating identity for user B 
-  const userBIdentity = Ed25519KeyIdentity.generate(
-  );
+  //generating identity for user B
+  const userBIdentity = Ed25519KeyIdentity.generate();
 
-
-
-
-  return { userBIdentity};
+  return { userBIdentity };
 };
 async function runWill() {
   const { userAIdentity } = await userA_will();
   const { userBIdentity } = await userB_will();
 
-  runTests(
-    get_will_tests(
-     userAIdentity,userBIdentity
-    )
-  );
+  runTests(get_will_tests(userAIdentity, userBIdentity));
 }
 runWill();

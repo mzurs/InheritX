@@ -2,7 +2,7 @@ import { ActorSubclass } from "@dfinity/agent";
 import {
   TestatorDetails,
   _SERVICE,
-} from "../../../../dfx_generated/providers/providers.did";
+} from "../../../../declarations/providers/providers.did";
 import { AzleResult } from "azle/test";
 import { Principal } from "azle";
 
@@ -100,7 +100,7 @@ export async function check_testator_details_with_wrong_details(
   const RIGHT_DEATH_USERID = "kutIDRN21IH_";
 
   const userDetails: TestatorDetails = {
-    firstNames: ["Claudine", "aulette"],// remove 'P'
+    firstNames: ["Claudine", "aulette"], // remove 'P'
     lastName: "Thiebaut",
     sex: "F",
     birthDate: "19350728",

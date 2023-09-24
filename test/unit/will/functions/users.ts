@@ -3,10 +3,10 @@ import { AzleResult } from "azle/test";
 import {
   UpdateUserDetails,
   _SERVICE,
-} from "../../../../dfx_generated/will/will.did";
+} from "../../../../declarations/will/will.did";
 import { createActor } from "../../../utils/actors";
 import { createRandomIdentity } from "../../../utils/utils";
-// import { createActor } from "../../../../dfx_generated/will";
+// import { createActor } from "../../../../declarations/will";
 // import { create_actor } from "../../utils/utils";
 
 //create users for will canister
@@ -147,8 +147,8 @@ export async function update_users_without_create_user(): Promise<
     birthLocationCode: "75950",
   };
 
-  const newIdentity=createRandomIdentity()
-  const unAuthorizedUser = await createActor("will",newIdentity);
+  const newIdentity = createRandomIdentity();
+  const unAuthorizedUser = await createActor("will", newIdentity);
 
   const updateUser: UpdateUserDetails =
     await unAuthorizedUser.update_user_details(userADetailsArgs);

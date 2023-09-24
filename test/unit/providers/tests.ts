@@ -1,5 +1,5 @@
 import { ActorSubclass } from "@dfinity/agent";
-import { _SERVICE } from "../../../dfx_generated/providers/providers.did";
+import { _SERVICE } from "../../../declarations/providers/providers.did";
 import { Test } from "azle/test";
 import {
   check_testator_death_with_wrong_principal,

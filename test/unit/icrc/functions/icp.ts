@@ -7,10 +7,10 @@ import { ActorSubclass, Identity } from "@dfinity/agent";
 import {
   TransferArgs,
   _SERVICE as _ICPLedger,
-} from "../../../../dfx_generated/icp/icp/icp_ledger.did";
+} from "../../../../declarations/icp/icp/icp_ledger.did";
 import { Principal } from "@dfinity/principal";
 import { humanToE8s } from "../../../utils/utils";
-import { _SERVICE as _ICRC } from "../../../../dfx_generated/icrc/icrc.did";
+import { _SERVICE as _ICRC } from "../../../../declarations/icrc/icrc.did";
 
 export async function compareICPBalance(
   principal: string,
@@ -40,10 +40,13 @@ export async function transferICPToICRC(
   );
   const identifierAccount =
     await actorIcrc.get_canister_binary_subaccount_from_identifier(indentifier);
- 
-    const identifierAccountHex =
+
+  const identifierAccountHex =
     await actorIcrc.get_canister_hex_subaccount_from_identifier(indentifier);
-     console.log("🚀 ~ file: icp.ts:45 ~ identifierAccountHex:", identifierAccountHex)
+  console.log(
+    "🚀 ~ file: icp.ts:45 ~ identifierAccountHex:",
+    identifierAccountHex
+  );
 
   //Creating userA actor for ICP_ledger with Identity
   const actorIcpLedger: ActorSubclass<_ICPLedger> =
@@ -59,7 +62,7 @@ export async function transferICPToICRC(
   };
 
   const transfer = await actorIcpLedger.transfer(transferArgs);
-  console.log("🚀 ~ file: icp.ts:65 ~ transfer:", transfer)
+  console.log("🚀 ~ file: icp.ts:65 ~ transfer:", transfer);
 
   if ("Ok" in transfer) {
     return { Ok: true };

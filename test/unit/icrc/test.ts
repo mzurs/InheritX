@@ -1,10 +1,9 @@
 import { getCanisterId, runTests } from "azle/test";
-import { createActor } from "../../../dfx_generated/icrc";
+import { createActor } from "../../../declarations/icrc";
 // import { get_icrc_tests } from "./tests";
 import { Ed25519KeyIdentity } from "@dfinity/identity";
 import { get_icrc_tests } from "./tests";
 import { pretestIcrc } from "./pretest_icrc";
-
 
 function stringToUint8Array(str: string): Uint8Array {
   // Encode the string to UTF-8 bytes
@@ -21,7 +20,6 @@ function stringToUint8Array(str: string): Uint8Array {
   return new Uint8Array([...utf8Bytes, ...padding]);
 }
 
-
 const icrc_canister = createActor(getCanisterId("icrc"), {
   agentOptions: {
     host: "http://127.0.0.1:8080",
@@ -30,9 +28,7 @@ const icrc_canister = createActor(getCanisterId("icrc"), {
 
 const userA_icrc = async () => {
   //generating identity for user A from mnemonic
-  const userAIdentity = await Ed25519KeyIdentity
-    .generate
-    ();
+  const userAIdentity = await Ed25519KeyIdentity.generate();
 
   const identity = userAIdentity;
 
@@ -46,11 +42,8 @@ const userA_icrc = async () => {
 };
 const userB_icrc = async () => {
   //generating identity for user B from mnemonic
-  const userBIdentity = Ed25519KeyIdentity
-    .generate
-    ();
+  const userBIdentity = Ed25519KeyIdentity.generate();
   const identity = userBIdentity;
-
 
   const actorUserB = createActor(getCanisterId("icrc"), {
     agentOptions: {

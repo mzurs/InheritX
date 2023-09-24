@@ -1,7 +1,7 @@
 import { Identity } from "@dfinity/agent";
 import { Test } from "azle/test";
 
-import { _SERVICE } from "../../../dfx_generated/will/will.did";
+import { _SERVICE } from "../../../declarations/will/will.did";
 import {
   createUsers,
   reCreateUsers,

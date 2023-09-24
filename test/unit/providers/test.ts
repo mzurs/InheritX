@@ -1,5 +1,5 @@
 import { getCanisterId, runTests } from "azle/test";
-import { createActor } from "../../../dfx_generated/providers";
+import { createActor } from "../../../declarations/providers";
 import { Ed25519KeyIdentity } from "@dfinity/identity";
 import { get_providers_tests } from "./tests";
 

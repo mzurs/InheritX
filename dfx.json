@@ -8,7 +8,7 @@
       "candid": "canisters/providers/providers.did",
       "wasm": ".azle/providers/providers.wasm.gz",
       "declarations": {
-        "output": "dfx_generated/providers",
+        "output": "declarations/providers",
         "node_compatibility": true
       }
     },
@@ -20,7 +20,7 @@
       "candid": "canisters/will/will.did",
       "wasm": ".azle/will/will.wasm.gz",
       "declarations": {
-        "output": "dfx_generated/will",
+        "output": "declarations/will",
         "node_compatibility": true
       },
       "opt_level": "1",
@@ -36,7 +36,7 @@
       "wasm": ".azle/icrc/icrc.wasm.gz",
       "opt_level": "1",
       "declarations": {
-        "output": "dfx_generated/icrc",
+        "output": "declarations/icrc",
         "node_compatibility": true
       }
     },
@@ -50,7 +50,7 @@
         }
       },
       "declarations": {
-        "output": "dfx_generated/ckbtc/ckbtc",
+        "output": "declarations/ckbtc/ckbtc",
         "node_compatibility": true
       }
     },
@@ -65,7 +65,7 @@
         }
       },
       "declarations": {
-        "output": "dfx_generated/icp/icp",
+        "output": "declarations/icp/icp",
         "node_compatibility": true
       }
     }

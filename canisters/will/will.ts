@@ -200,6 +200,18 @@ export function get_wills_for_testator(): GetTestatorWills {
   }
 }
 
+// check whether is any will for heirs
+$query;
+export function is_will_exists_heirs(): boolean {
+  return heirsMappingToWillIdentifier.containsKey(ic.caller());
+}
+
+// check whether is any will for testator
+$query;
+export function is_will_exists_testator(): boolean {
+  return testatorMappingToWillIdentifier.containsKey(ic.caller());
+}
+
 // Function used By Heirs To See All Available Wills To Claim
 $query;
 export function get_wills_for_heir(): GetHeirWills {
@@ -426,47 +438,10 @@ export async function claim_will(
   }
 }
 
-// export async function claim_death_of_testator_by_base64Id(
-//   base64Id: string,
-//   identifier: number
-// ): Promise<ClaimDeathOfTestatorByBase64ID> {
-//   const will = wills.containsKey(identifier);
-//   if (!will) {
-//     return {
-//       noWillExists: true,
-//     };
-//   } else {
-//     const willDetailsOpt = wills.get(identifier);
-
-//     const willDetails = match(willDetailsOpt, {
-//       Some: (will) => will,
-//       None: () => null,
-//     });
-//     if(!willDetails){
-//       return {
-//         errorMessage:JSON.stringify(willDetails)
-//       }
-//     }else{
-//       const testatorPrincipal=willDetails.testator;
-
-//       const userDetailsOpt=users.get(testatorPrincipal);
-//       const userDetails=match(userDetailsOpt,{
-//         Some:(user)=>user,
-//         None:()=>null
-//       })
-//       if(!userDetails){
-//         return {
-//           errorMessage:JSON.stringify(userDetails)
-//         }
-//       }else{
-//         const 
-//       }
-//     }
-//   }
-// }
 //===================================================EXPORTS==================================================
 export {
   //users
+  is_user_exists,
   get_user_details,
   add_user_details,
   update_user_details,

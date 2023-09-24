@@ -52,7 +52,7 @@ export async function icrc_ckbtc_transfer(
         owner: to,
         subaccount: Opt.None,
       },
-      amount: amount - 10n,
+      amount: amount - 20n,
       fee: Opt.Some(10n),
       memo: Opt.None,
       created_at_time: Opt.Some(ic.time()),

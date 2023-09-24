@@ -11,15 +11,15 @@ import {
   ManualReply_4,
   _SERVICE as _WILL,
   userDetailsArgs,
-} from "../../../../dfx_generated/will/will.did";
+} from "../../../../declarations/will/will.did";
 import { createActor } from "../../../utils/actors";
-import { _SERVICE as _ICP } from "../../../../dfx_generated/icp/icp/icp_ledger.did";
+import { _SERVICE as _ICP } from "../../../../declarations/icp/icp/icp_ledger.did";
 import { humanToE8s } from "../../../utils/utils";
-import { _SERVICE as _ICRC } from "../../../../dfx_generated/icrc/icrc.did";
+import { _SERVICE as _ICRC } from "../../../../declarations/icrc/icrc.did";
 import {
   TransferArg,
   _SERVICE,
-} from "../../../../dfx_generated/ckbtc/ckbtc/ckbtc_ledger.did";
+} from "../../../../declarations/ckbtc/ckbtc/ckbtc_ledger.did";
 import { Principal } from "@dfinity/principal";
 // function to create will test
 export async function createICRCWill(
@@ -383,4 +383,38 @@ export async function claimICRCWill(
       Err: JSON.stringify(createWill),
     };
   }
+}
+
+export async function isWillExistsTestator(
+  identity: Identity,
+  res: boolean
+): Promise<AzleResult<boolean, string>> {
+  const actor_will_user: ActorSubclass<_WILL> = await createActor(
+    "will",
+    identity
+  );
+
+  const isExists = await actor_will_user.is_will_exists_testator();
+  console.log("🚀 ~ file: index.ts:397 ~ isExists:", isExists);
+
+  return {
+    Ok: isExists === res,
+  };
+}
+
+export async function isWillExistsHeirs(
+  identity: Identity,
+  res: boolean
+): Promise<AzleResult<boolean, string>> {
+  const actor_will_user: ActorSubclass<_WILL> = await createActor(
+    "will",
+    identity
+  );
+
+  const isExists = await actor_will_user.is_will_exists_heirs();
+  console.log("🚀 ~ file: index.ts:417 ~ isExists:", isExists);
+
+  return {
+    Ok: isExists === res,
+  };
 }

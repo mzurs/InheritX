@@ -132,6 +132,8 @@ service : () -> {
   get_willsT : (principal) -> (vec float64) query;
   get_wills_for_heir : () -> (GetHeirWills) query;
   get_wills_for_testator : () -> (GetTestatorWills) query;
+  is_will_exists_heirs : () -> (bool) query;
+  is_will_exists_testator : () -> (bool) query;
   report_death_by_base64Id : (nat32, text) -> (ManualReply_4);
   request_random_will_identifier : () -> (nat32);
   set_icrc_canister_id : (text) -> (text);

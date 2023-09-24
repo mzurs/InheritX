@@ -5,6 +5,8 @@ import {
   compareTotalWill,
   createICRCWill,
   deleteWill,
+  isWillExistsHeirs,
+  isWillExistsTestator,
 } from "./functions";
 import { icpBalance } from "./functions/icrc";
 import { e8sToHuman } from "../../utils/utils";
@@ -36,6 +38,18 @@ export async function get_will_tests(
   return [
     // -------------------------------ICP-----------------------------------------------
     {
+      name: "is_will_exists_for_heirs function should return false",
+      test: async () => {
+        return await isWillExistsHeirs(userBIdentity, false);
+      },
+    },
+    {
+      name: "is_will_exists_for_testator function should return false",
+      test: async () => {
+        return await isWillExistsTestator(userAIdentity, false);
+      },
+    },
+    {
       name: `Create Will from UserA to UserB for 1 ICP`,
       test: async () => {
         return await createICRCWill(
@@ -45,6 +59,18 @@ export async function get_will_tests(
           userBIdentity,
           1
         );
+      },
+    },
+    {
+      name: "is_will_exists_for_heirs function should return true",
+      test: async () => {
+        return await isWillExistsHeirs(userBIdentity, true);
+      },
+    },
+    {
+      name: "is_will_exists_for_testator function should return true",
+      test: async () => {
+        return await isWillExistsTestator(userAIdentity, true);
       },
     },
     {

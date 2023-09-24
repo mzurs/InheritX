@@ -1,13 +1,13 @@
 import { getCanisterId } from "azle/test";
-import { createActor as createActor_ICP } from "../../dfx_generated/icp/icp";
-import { createActor as createActor_ICRC } from "../../dfx_generated/icrc";
-import { createActor as createActor_ckBTC } from "../../dfx_generated/ckbtc/ckbtc";
-import { createActor as createActor_Will } from "../../dfx_generated/will";
-import { createActor as createActor_Providers } from "../../dfx_generated/providers";
+import { createActor as createActor_ICP } from "../../declarations/icp/icp";
+import { createActor as createActor_ICRC } from "../../declarations/icrc";
+import { createActor as createActor_ckBTC } from "../../declarations/ckbtc/ckbtc";
+import { createActor as createActor_Will } from "../../declarations/will";
+import { createActor as createActor_Providers } from "../../declarations/providers";
 import { ActorSubclass, Identity } from "@dfinity/agent";
-import { _SERVICE as _ICRC } from "../../dfx_generated/icrc/icrc.did";
-import { _SERVICE as _Provider } from "../../dfx_generated/providers/providers.did";
-import { _SERVICE } from "../../dfx_generated/will/will.did";
+import { _SERVICE as _ICRC } from "../../declarations/icrc/icrc.did";
+import { _SERVICE as _Provider } from "../../declarations/providers/providers.did";
+import { _SERVICE } from "../../declarations/will/will.did";
 
 // type  ActorSubclassService=_ICRC |_Provider;
 
@@ -32,10 +32,7 @@ async function createCanistersBasedActors(
   }
 }
 
-export async function createActor(
-  canisterName: string,
-  identity?: Identity
-){
+export async function createActor(canisterName: string, identity?: Identity) {
   switch (canisterName) {
     case "will":
       return await createCanistersBasedActors(
@@ -70,6 +67,6 @@ export async function createActor(
         identity
       );
     default:
-        return `Canister ${canisterName} Not Found`
+      return `Canister ${canisterName} Not Found`;
   }
 }

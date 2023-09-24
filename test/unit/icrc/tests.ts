@@ -1,7 +1,7 @@
 import { ActorSubclass, Identity } from "@dfinity/agent";
 import { Test } from "azle/test";
 
-import { _SERVICE } from "../../../dfx_generated/icrc/icrc.did";
+import { _SERVICE } from "../../../declarations/icrc/icrc.did";
 import {
   compareICPBalance,
   compareIcrcCanistersIdentifierBalance,
