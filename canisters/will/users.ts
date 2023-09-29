@@ -1,4 +1,4 @@
-import { Principal, $update, ic, match, $query } from "azle";
+import { Principal, $update, ic, match, $query, Result } from "azle";
 import {
   userDetailsArgs,
   AddUserDetails,
@@ -37,7 +37,15 @@ export function get_user_details(): GetUserDetails {
     };
   }
 }
+//extra
 
+$query;
+export function get_user_by_princicpal(princicpal: Principal): string {
+ return match(users.get(princicpal), {
+    Some: (user) => JSON.stringify(user),
+    None: (none) => "null",
+  });
+}
 //--------------------------------------------------Update Methods-------------------------------------------------------
 
 // Add User Details Inside Stable Memory

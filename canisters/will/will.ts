@@ -9,6 +9,7 @@ import {
   Opt,
   Vec,
   Tuple,
+  Result,
 } from "azle";
 import {
   GetTestatorWills,
@@ -26,6 +27,7 @@ import {
   is_user_exists,
   update_user_details,
   get_user_details,
+  get_user_by_princicpal,
 } from "./users";
 import { icrc_claim_will, icrc_create_will, icrc_delete_will } from "./icrc";
 import { canisterBalance } from "./utils/utils";
@@ -35,6 +37,7 @@ import {
   providers,
   report_death_by_base64Id,
 } from "./providers";
+import { will } from "../../declarations/will";
 
 //=============================================Stable Variables===========================================================
 
@@ -65,19 +68,32 @@ export let isIdentifierUsed = new StableBTreeMap<nat32, boolean>(6, 32, 10);
 //-------------------------------------------------------FUNCTIONS---------------------------------------------
 
 $query;
+// check whether principal already add details
+export function is_user_principal_found(): boolean {
+  return users.containsKey(ic.caller());
+}
+
+$query;
 export function get_all_willsT(): Vec<Tuple<[Principal, Vec<number>]>> {
   return testatorMappingToWillIdentifier.items();
 }
 
 $query;
-export function get_willsT(principal: Principal): Vec<number> {
-  return match(testatorMappingToWillIdentifier.get(principal), {
+export function get_willsT(): Vec<number> {
+  return match(testatorMappingToWillIdentifier.get(ic.caller()), {
     Some: (wills) => wills,
     None: (none) => [],
   });
 }
-
+$query;
+export function get_willsC(): Vec<number> {
+  return match(heirsMappingToWillIdentifier.get(ic.caller()), {
+    Some: (wills) => wills,
+    None: (none) => [],
+  });
+}
 // add will identifier to testators and heirs mappings
+$update;
 export function add_identifier_to_mapping(
   testator: Principal,
   heirs: Principal,
@@ -114,6 +130,7 @@ export function add_identifier_to_mapping(
 }
 
 // remove will identifier from testators and heirs respectively
+$update;
 export function remove_identifier_from_mapping(
   testator: Principal,
   heirs: Principal,
@@ -122,8 +139,13 @@ export function remove_identifier_from_mapping(
   const testatorIdentifiers = testatorMappingToWillIdentifier.get(testator);
   match(testatorIdentifiers, {
     Some: (identifiers) => {
-      const index = identifiers.indexOf(identifier);
-      identifiers.splice(index);
+      const removedTestatorIdentifiers: Vec<number> = identifiers.filter(
+        (number) => number !== identifier
+      );
+      testatorMappingToWillIdentifier.insert(
+        testator,
+        removedTestatorIdentifiers
+      );
     },
     None: (none) => none,
   });
@@ -131,8 +153,10 @@ export function remove_identifier_from_mapping(
   const heirsIdentifiers = heirsMappingToWillIdentifier.get(heirs);
   match(heirsIdentifiers, {
     Some: (identifiers) => {
-      const index = identifiers.indexOf(identifier);
-      identifiers.splice(index);
+      const removedHeirsIdentifiers: Vec<number> = identifiers.filter(
+        (number) => number !== identifier
+      );
+      heirsMappingToWillIdentifier.insert(heirs, removedHeirsIdentifiers);
     },
     None: (none) => none,
   });
@@ -251,6 +275,55 @@ export function get_wills_for_heir(): GetHeirWills {
 $query;
 export function get_all_wills(): Vec<Tuple<[nat32, Will]>> {
   return wills.items();
+}
+
+$query;
+export function get_will(identifier: nat32): Result<Will, string> {
+  if (wills.containsKey(identifier)) {
+    const willOpt = wills.get(identifier);
+    const will = match(willOpt, {
+      Some: (will) => will,
+      None: () => null,
+    });
+    if (!will) {
+      return {
+        Err: `No Will Will Identifier ${identifier} Found!`,
+      };
+    }
+    if (
+      is_user_exists(ic.caller()) ||
+      ic.caller().toText() === will.heirs.toText() ||
+      ic.caller().toText() === will.testator.toText()
+    ) {
+      return {
+        Ok: will,
+      };
+    } else {
+      return {
+        Err: " Unauthorized Access to Get W",
+      };
+    }
+  } else {
+    return {
+      Err: `No Will Will Identifier ${identifier} Found!`,
+    };
+  }
+}
+
+//extras
+$query;
+export function get_testator_wills_by_princicpal(
+  princicpal: Principal
+): Opt<Vec<nat32>> {
+  const wills = testatorMappingToWillIdentifier.get(princicpal);
+  return wills;
+}
+$query;
+export function get_heirs_wills_by_princicpal(
+  princicpal: Principal
+): Opt<Vec<nat32>> {
+  const wills = heirsMappingToWillIdentifier.get(princicpal);
+  return wills;
 }
 //----------------------------------------------Update Methods-------------------------------------------------------
 
@@ -437,14 +510,13 @@ export async function claim_will(
     };
   }
 }
-
 //===================================================EXPORTS==================================================
 export {
   //users
-  is_user_exists,
   get_user_details,
   add_user_details,
   update_user_details,
+  get_user_by_princicpal,
 
   //utils
   canisterBalance,

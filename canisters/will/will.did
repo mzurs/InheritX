@@ -92,6 +92,7 @@ type Will = record {
   tokenTicker : text;
   identifier : nat32;
 };
+type _AzleResult = variant { Ok : Will; Err : text };
 type _InlineICRCClaimWillCkbtcClaimResult = record {
   success : bool;
   claimCKBTCMessage : text;
@@ -116,6 +117,7 @@ type userDetailsArgs = record {
   lastName : text;
 };
 service : () -> {
+  add_identifier_to_mapping : (principal, principal, nat32) -> ();
   add_user_details : (userDetailsArgs) -> (AddUserDetails);
   bitcoin_get_balance : (text) -> (nat64);
   canisterBalance : () -> (nat64) query;
@@ -126,14 +128,21 @@ service : () -> {
   get_all_identifiers : () -> (vec record { nat32; principal }) query;
   get_all_wills : () -> (vec record { nat32; Will }) query;
   get_all_willsT : () -> (vec record { principal; vec float64 }) query;
+  get_heirs_wills_by_princicpal : (principal) -> (opt vec nat32) query;
   get_icrc_canister_id : () -> (text) query;
+  get_testator_wills_by_princicpal : (principal) -> (opt vec nat32) query;
+  get_user_by_princicpal : (principal) -> (text) query;
   get_user_details : () -> (GetUserDetails) query;
+  get_will : (nat32) -> (_AzleResult) query;
   get_will_canister_id : () -> (principal) query;
-  get_willsT : (principal) -> (vec float64) query;
+  get_willsC : () -> (vec float64) query;
+  get_willsT : () -> (vec float64) query;
   get_wills_for_heir : () -> (GetHeirWills) query;
   get_wills_for_testator : () -> (GetTestatorWills) query;
+  is_user_principal_found : () -> (bool) query;
   is_will_exists_heirs : () -> (bool) query;
   is_will_exists_testator : () -> (bool) query;
+  remove_identifier_from_mapping : (principal, principal, nat32) -> ();
   report_death_by_base64Id : (nat32, text) -> (ManualReply_4);
   request_random_will_identifier : () -> (nat32);
   set_icrc_canister_id : (text) -> (text);

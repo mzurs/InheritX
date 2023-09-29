@@ -44,7 +44,7 @@ export async function check_death_by_identifier(
 
     if (response == null) {
       return {
-        errorMessageFromCanisterCall: String(responseResult.Err),
+        errorMessageFromCanisterCall: JSON.stringify(responseResult.Err),
       };
     } else {
       return {
@@ -85,7 +85,7 @@ export async function report_death_by_base64Id(
     });
     if (!testatorDetails) {
       return {
-        testatorDetailsNotFound: String(testatorDetailsOpt.None),
+        testatorDetailsNotFound: JSON.stringify(testatorDetailsOpt.None),
       };
     } else {
       //   const testator: TestatorDetails = testatorDetails;
@@ -105,7 +105,7 @@ export async function report_death_by_base64Id(
 
       if (!response) {
         return {
-          errorMessageFromCanisterCall: String(responseResult.Err),
+          errorMessageFromCanisterCall: JSON.stringify(responseResult.Err),
         };
       } else {
         if (response.result) {
@@ -114,7 +114,7 @@ export async function report_death_by_base64Id(
           };
         } else {
           return {
-            errorMessageFromProviders: String(response.message),
+            errorMessageFromProviders: JSON.stringify(response.message),
           };
         }
       }
