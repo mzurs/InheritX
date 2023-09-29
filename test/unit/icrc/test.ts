@@ -28,7 +28,7 @@ const icrc_canister = createActor(getCanisterId("icrc"), {
 
 const userA_icrc = async () => {
   //generating identity for user A from mnemonic
-  const userAIdentity = await Ed25519KeyIdentity.generate();
+  const userAIdentity = Ed25519KeyIdentity.generate();
 
   const identity = userAIdentity;
 

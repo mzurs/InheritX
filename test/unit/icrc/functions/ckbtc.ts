@@ -9,7 +9,7 @@ import {
   _SERVICE as _ckBTCLedger,
 } from "../../../../declarations/ckbtc/ckbtc/ckbtc_ledger.did";
 import { AzleResult, getCanisterId } from "azle/test";
-import { humanToE8s } from "../../../utils/utils";
+import { getIdentifierBlob, humanToE8s } from "../../../utils/utils";
 import { _SERVICE as _ICRC } from "../../../../declarations/icrc/icrc.did";
 
 // compare the ckBTC Balance of a Principal with a pre-image value
@@ -32,17 +32,18 @@ export async function compareckBTCBalance(
 
 export async function transferckBTCToICRC(
   userAIdentity: Identity,
-  indentifier: number,
+  identifier: number,
   amount: number
 ): Promise<AzleResult<boolean, string>> {
   const actorCKBTC: ActorSubclass<_ckBTCLedger> =
     await createckBTCActorWithIdentity(userAIdentity);
 
+  const subAccount = getIdentifierBlob(identifier);
   const transferArgs: TransferArg = {
     from_subaccount: [],
     to: {
       owner: Principal.fromText(getCanisterId("icrc")),
-      subaccount: [],
+      subaccount: [subAccount],
     },
     memo: [],
     fee: [10n],
@@ -74,7 +75,7 @@ export async function compareIcrcCanistersIdentifierBalanceckBTC(
     owner: Principal.fromText(icrcCanisterId),
     subaccount: [],
   });
-  console.log("🚀 ~ file: icp.ts:88 ~ balance:", balance);
+  // console.log("🚀 ~ file: icp.ts:88 ~ balance:", balance);
 
   return {
     Ok: balance === humanToE8s(value) - humanToE8s(10),
@@ -87,12 +88,8 @@ export async function transferFromICRCckBTC(
   identifier: number,
   value: number
 ): Promise<AzleResult<boolean, string>> {
-  const transferResult = await caller.icrc_ckbtc_transfer(
-    identifier,
-    to,
-    9999980n
-  );
-  console.log("🚀 ~ file: ckbtc.ts:95 ~ transferResult:", transferResult);
+  const transferResult = await caller.icrc_ckbtc_transfer(identifier, to);
+  // console.log("🚀 ~ file: ckbtc.ts:95 ~ transferResult:", transferResult);
 
   if ("Ok" in transferResult) {
     return {

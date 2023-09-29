@@ -14,7 +14,7 @@ import {
 } from "../../../../declarations/will/will.did";
 import { createActor } from "../../../utils/actors";
 import { _SERVICE as _ICP } from "../../../../declarations/icp/icp/icp_ledger.did";
-import { humanToE8s } from "../../../utils/utils";
+import { getIdentifierBlob, humanToE8s } from "../../../utils/utils";
 import { _SERVICE as _ICRC } from "../../../../declarations/icrc/icrc.did";
 import {
   TransferArg,
@@ -36,9 +36,9 @@ export async function createICRCWill(
   } else {
     //user A & B principal from identities
     const principalUserA = userAIdentity.getPrincipal();
-    // console.log("🚀 ~ file: index.ts:28 ~ principalUserA:", principalUserA.toText())
+    // //console.log("🚀 ~ file: index.ts:28 ~ principalUserA:", principalUserA.toText())
     const principalUserB = userBIdentity.getPrincipal();
-    // console.log("🚀 ~ file: index.ts:30 ~ principalUserB:", principalUserB.toText())
+    // //console.log("🚀 ~ file: index.ts:30 ~ principalUserB:", principalUserB.toText())
 
     //creates actor of will canister for UserA
 
@@ -88,7 +88,7 @@ export async function createICRCWill(
         created_at_time: [],
         memo: 0n,
       });
-      console.log("🚀 ~ file: index.ts:67 ~ transferICP:", transferICP);
+      //console.log("🚀 ~ file: index.ts:67 ~ transferICP:", transferICP);
     }
     // if ("Ok" in transferICP) {
     //create user with correct details to proceed corrct test results
@@ -118,7 +118,7 @@ export async function createICRCWill(
       createWillObj,
       willType
     );
-    // console.log("🚀 ~ file: index.ts:62 ~ createWill:", createWill);
+    // //console.log("🚀 ~ file: index.ts:62 ~ createWill:", createWill);
     if ("icrc" in createWill && "success" in createWill.icrc) {
       return {
         Ok: createWill.icrc.success === true,
@@ -142,10 +142,10 @@ export async function compareTotalWill(
   identity: Identity,
   totalWills: number
 ): Promise<AzleResult<boolean, string>> {
-  console.log(
-    "🚀 ~ file: index.ts:83 ~ identity:",
-    identity.getPrincipal().toText()
-  );
+  //console.log(
+  //   "🚀 ~ file: index.ts:83 ~ identity:",
+  //   identity.getPrincipal().toText()
+  // );
   const actor_will_userAny: ActorSubclass<_WILL> = await createActor(
     "will",
     identity
@@ -155,7 +155,7 @@ export async function compareTotalWill(
     case "testator":
       const testatorWills: GetTestatorWills =
         await actor_will_userAny.get_wills_for_testator();
-      // console.log("🚀 ~ file: index.ts:91 ~ testatorWills:", testatorWills);
+      // //console.log("🚀 ~ file: index.ts:91 ~ testatorWills:", testatorWills);
 
       if ("wills" in testatorWills) {
         return {
@@ -169,7 +169,7 @@ export async function compareTotalWill(
     case "heirs":
       const heirsWills: GetHeirWills =
         await actor_will_userAny.get_wills_for_heir();
-      // console.log("🚀 ~ file: index.ts:104 ~ heirsWills:", heirsWills);
+      // //console.log("🚀 ~ file: index.ts:104 ~ heirsWills:", heirsWills);
 
       if ("wills" in heirsWills) {
         return {
@@ -202,7 +202,7 @@ export async function deleteWill(
     identifier,
     willType
   );
-  console.log("🚀 ~ file: index.ts:178 ~ deleteWillResult:", deleteWillResult);
+  //console.log("🚀 ~ file: index.ts:178 ~ deleteWillResult:", deleteWillResult);
   if (asset === "ICP") {
     if (
       "icrc" in deleteWillResult &&
@@ -247,9 +247,9 @@ export async function claimICRCWill(
 ): Promise<AzleResult<boolean, string>> {
   //user A & B principal from identities
   const principalUserA = userAIdentity.getPrincipal();
-  // console.log("🚀 ~ file: index.ts:28 ~ principalUserA:", principalUserA.toText())
+  // //console.log("🚀 ~ file: index.ts:28 ~ principalUserA:", principalUserA.toText())
   const principalUserB = userBIdentity.getPrincipal();
-  // console.log("🚀 ~ file: index.ts:30 ~ principalUserB:", principalUserB.toText())
+  // //console.log("🚀 ~ file: index.ts:30 ~ principalUserB:", principalUserB.toText())
 
   const actor_icp_userA: ActorSubclass<_ICP> = await createActor(
     "icp_ledger",
@@ -282,7 +282,7 @@ export async function claimICRCWill(
       created_at_time: [],
       memo: 0n,
     });
-    // console.log("🚀 ~ file: index.ts:240 ~ transferICP:", transferICP);
+    // //console.log("🚀 ~ file: index.ts:240 ~ transferICP:", transferICP);
   }
 
   if (asset === "ckBTC") {
@@ -290,12 +290,12 @@ export async function claimICRCWill(
       "ckbtc_ledger",
       userAIdentity
     );
-
+    const subAccount=getIdentifierBlob(identifier)
     const transferArgs: TransferArg = {
       from_subaccount: [],
       to: {
         owner: Principal.fromText(getCanisterId("icrc")),
-        subaccount: [],
+        subaccount: [subAccount],
       },
       memo: [],
       fee: [10n],
@@ -325,7 +325,7 @@ export async function claimICRCWill(
     const base64ID = "kutIDRN21IH_";
     const reportDeathResult: ManualReply_4 =
       await actor_will_userB.report_death_by_base64Id(identifier, base64ID);
-    // console.log(
+    // //console.log(
     //   "🚀 ~ file: index.ts:251 ~ reportDeathResult:",
     //   reportDeathResult
     // );
@@ -336,7 +336,7 @@ export async function claimICRCWill(
         identifier,
         willType
       );
-      // console.log(
+      // //console.log(
       //   "🚀 ~ file: index.ts:253 ~ claimWillResult:",
       //   claimWillResult
       // );
@@ -395,7 +395,7 @@ export async function isWillExistsTestator(
   );
 
   const isExists = await actor_will_user.is_will_exists_testator();
-  console.log("🚀 ~ file: index.ts:397 ~ isExists:", isExists);
+  //console.log("🚀 ~ file: index.ts:397 ~ isExists:", isExists);
 
   return {
     Ok: isExists === res,
@@ -412,7 +412,7 @@ export async function isWillExistsHeirs(
   );
 
   const isExists = await actor_will_user.is_will_exists_heirs();
-  console.log("🚀 ~ file: index.ts:417 ~ isExists:", isExists);
+  //console.log("🚀 ~ file: index.ts:417 ~ isExists:", isExists);
 
   return {
     Ok: isExists === res,

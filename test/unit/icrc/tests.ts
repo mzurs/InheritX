@@ -52,7 +52,7 @@ export function get_icrc_tests(
       },
     },
     {
-      name: "Transfer 1 ICP from User A Identifier ICRC Derived Account",
+      name: "Transfer 1 ICP from User A TO ICRC Derived Account",
       test: async () => {
         return await transferICPToICRC(userAIdentity, identifier, 1);
       },
@@ -105,7 +105,7 @@ export function get_icrc_tests(
       },
     },
     {
-      name: "Transfer 1 ckBTC from User A Identifier Derived ICRC Canister Principal",
+      name: "Transfer 1 ckBTC from User A tO Derived ICRC Canister Principal",
       test: async () => {
         return await transferckBTCToICRC(userAIdentity, identifier, 1);
       },

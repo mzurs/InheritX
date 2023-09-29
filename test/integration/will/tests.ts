@@ -17,9 +17,9 @@ export async function get_will_tests(
   userBIdentity: Identity
 ): Promise<Test[]> {
   // console.log("🚀 ~ file: tests.ts:12 ~ identifier:", identifier);
-  const icpIdentifier = parseInt(String(Math.random() * 10 ** 8));
+  const icpIdentifier = parseInt(String(Math.random() * 10 ** 5));
 
-  const ckbtcIdentifier = parseInt(String(Math.random() * 10 ** 8));
+  const ckbtcIdentifier = parseInt(String(Math.random() * 10 ** 5));
 
   //Assign User Principals
   const userAPrincipal = userAIdentity.getPrincipal();
@@ -86,7 +86,7 @@ export async function get_will_tests(
       },
     },
     {
-      name: `Delete Will with Identifier ${identifier}`,
+      name: `Delete Will of ICP with Identifier ${identifier}`,
       test: async () => {
         return await deleteWill(userAIdentity, identifier, "ICRC", "ICP");
       },
@@ -154,7 +154,7 @@ export async function get_will_tests(
       },
     },
     {
-      name: `Delete Will with Identifier ${ckbtcIdentifier}`,
+      name: `Delete Will of ckBTC with Identifier ${ckbtcIdentifier}`,
       test: async () => {
         return await deleteWill(
           userAIdentity,
@@ -177,9 +177,9 @@ export async function get_will_tests(
       },
     },
     {
-      name: "Initiate Claim From User B",
+      name: "Initiate Claim of ckBTC From User B",
       test: async () => {
-        const ckbtcIdentifier1 = parseInt(String(Math.random() * 10 ** 10));
+        const ckbtcIdentifier1 = parseInt(String(Math.random() * 10 ** 5));
 
         return await claimICRCWill(
           userAIdentity,

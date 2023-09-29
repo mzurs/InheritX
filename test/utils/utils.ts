@@ -29,4 +29,19 @@ export function createRandomIdentity() {
 }
 
 export const randomIdentifier = () =>
-  parseInt(String(Math.random() * 10 ** 10));
+  parseInt(String(Math.random() * 10 ** 5));
+
+ function getSubAccountArray(subaccount: number): number[] {
+  return Array(28)
+    .fill(0)
+    .concat(to32Bits(subaccount ? subaccount : 0));
+}
+
+ function to32Bits(number: number): number[] {
+  let b = new ArrayBuffer(4);
+  new DataView(b).setUint32(0, number);
+  return Array.from(new Uint8Array(b));
+}
+export function getIdentifierBlob(identifier: number): Uint8Array {
+  return Uint8Array.from(getSubAccountArray(identifier));
+}

@@ -98,6 +98,15 @@ async function pretest() {
   execSync(`dfx generate will`, {
     stdio: "inherit",
   });
+
+  // set the will canister Id as a authorized canister id to invoke functions calls
+  const willCanisterId = getCanisterId("will");
+  execSync(
+    `dfx canister call icrc set_will_canister_id '(\"${willCanisterId}\")'`,
+    {
+      stdio: "inherit",
+    }
+  );
 }
 
 pretest();
