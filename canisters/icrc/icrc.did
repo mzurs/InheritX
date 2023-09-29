@@ -64,7 +64,7 @@ service : () -> {
   get_will_canister_id : () -> (text) query;
   hex_address_from_principal : (principal, nat32) -> (text) query;
   icp_transfer : (nat32, principal) -> (ManualReply_1);
-  icrc_ckbtc_transfer : (nat32, principal, nat) -> (ManualReply_2);
+  icrc_ckbtc_transfer : (nat32, principal) -> (ManualReply_2);
   icrc_icp_balanceOf : (nat32) -> (ManualReply_3) query;
   icrc_icp_fee : () -> (ManualReply_3) query;
   icrc_icp_transfer : (nat32, principal) -> (ManualReply_4);

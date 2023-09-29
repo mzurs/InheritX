@@ -9,11 +9,16 @@ import {
   nat,
   nat32,
 } from "azle";
-import { ICRC1Account, ICRC1TransferArgs,ICRC1TransferError} from "azle/canisters/icrc";
+import {
+  ICRC1Account,
+  ICRC1TransferArgs,
+  ICRC1TransferError,
+} from "azle/canisters/icrc";
 import {
   binaryAddressFromPrincipal,
   Tokens,
   TransferArgs,
+  TransferResult,
 } from "azle/canisters/ledger";
 import { getIdentifierBlob, icpLedger } from "../../icrc";
 import { ICPTRANSFER, ICRCICPTRANSFER } from "../../utils/types";
@@ -150,6 +155,12 @@ export async function icp_transfer(
     Err: (err) => 0n,
   });
 
+  //check if will is created with zero balance can be deleted
+  if (balanceValue === 0n) {
+    return {
+      Ok: 0n,
+    };
+  }
   if (balanceValue <= 0) {
     return {
       message: `Insufficient Funds : ${balanceValue}`,

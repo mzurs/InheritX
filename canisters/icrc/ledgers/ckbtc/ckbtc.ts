@@ -1,8 +1,9 @@
 import { $query, nat, match, ic, $update, nat32, Principal, Opt } from "azle";
 import { ICRC1Account, ICRC1TransferArgs } from "azle/canisters/icrc";
-import { ckbtcLedger } from "../../icrc";
+import { ckbtcLedger, getIdentifierBlob } from "../../icrc";
 import { WILL_CANISTER_ID } from "../../utils/utils";
 import { ICRCCKBTCTRANSFER } from "../../utils/types";
+import { binaryAddressFromPrincipal } from "azle/canisters/ledger";
 
 //==============================================CKBTC Ledger METHODS===============================================
 
@@ -36,8 +37,7 @@ export async function ckbtc_fee(): Promise<nat> {
 $update;
 export async function icrc_ckbtc_transfer(
   identifier: nat32,
-  to: Principal,
-  amount: nat
+  to: Principal
 ): Promise<ICRCCKBTCTRANSFER> {
   // Only authorized principal can initiate this transfer
   if (ic.caller().toText() != WILL_CANISTER_ID) {
@@ -45,14 +45,37 @@ export async function icrc_ckbtc_transfer(
       unAuthorized: true,
     };
   } else {
+    // const from = binaryAddressFromPrincipal(ic.id(), identifier);
+    const from = getIdentifierBlob(identifier);
+
+    // SubAcount of ICRC Canister
+    const icrcSubAccount: ICRC1Account = {
+      owner: ic.id(),
+      subaccount: Opt.Some(from),
+    };
+    // Fetching current balance of icrc subaccount
+    const balanceResult = await ckbtcLedger
+      .icrc1_balance_of(icrcSubAccount)
+      .call();
+    const balance = match(balanceResult, {
+      Ok: (value) => value,
+      Err: (err) => 0n,
+    });
+
+    //check if will is created with zero balance can be deleted
+    if (balance === 0n) {
+      return {
+        Ok: 0n,
+      };
+    }
     // arguments objects to pass in transfer Function
     const transferArgs: ICRC1TransferArgs = {
-      from_subaccount: Opt.None,
+      from_subaccount: Opt.Some(from),
       to: {
         owner: to,
         subaccount: Opt.None,
       },
-      amount: amount - 20n,
+      amount: balance - 10n,
       fee: Opt.Some(10n),
       memo: Opt.None,
       created_at_time: Opt.Some(ic.time()),
