@@ -5,7 +5,9 @@
     "unit_test_will": "AZLE_REBUILD=true ts-node --transpile-only --ignore=false test/unit/will/test.ts",
     "unit_test_providers": "AZLE_REBUILD=true ts-node --transpile-only --ignore=false test/unit/providers/test.ts",
     "unit_test_icrc": "AZLE_REBUILD=true ts-node --transpile-only --ignore=false test/unit/icrc/test.ts",
-    "i_test":"AZLE_REBUILD=true ts-node --transpile-only --ignore=false test/integration/will/test.ts"
+    "i_test": "AZLE_REBUILD=true ts-node --transpile-only --ignore=false test/integration/will/test.ts",
+    "deploy": "yarn pretest",
+    "u_test":"yarn unit_test_will && yarn unit_test_icrc"
   },
   "dependencies": {
     "@dfinity/candid": "^0.19.2",

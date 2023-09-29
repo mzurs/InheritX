@@ -1,5 +1,46 @@
 # InheritX
 
+## Introduction
+
+<!-- Ignore -->
 <i>
-InheritX is a blockchain-based application developed on Internet Computer (IC) that allows users to create a digital will and bequeath their assets to designated beneficiaries in the event of their death.
+InheritX is a blockchain-based application developed on <b>Internet Computer (ICP) </b> that allows users to create a digital will and bequeath their assets to designated beneficiaries in the event of their death.
 </i>
+
+### NOTE
+
+This repo contains Backend Canisters Code, for Frontend Canister code visit [InheritX-UI](https://github.com/mzurs/InheritX-UI)
+
+## Prerequisites
+
+1. `DFX_VERSION= 0.15.0-beta.6`
+2. `AZLE_VERSION= 0.17.1`
+3. `NodeJS_VERSION= 18.17.1`
+
+## Setting Up and Running InheritX Locally
+
+- <h3>Follow steps below</h3>
+
+1. Install dependencies
+
+   ```bash
+   yarn install
+   ```
+
+2. Start local replica
+
+   ```bash
+    dfx start --clean
+   ```
+
+3. Deploy Canisters (run the command in new terminal)
+
+   ```bash
+   yarn deploy
+   ```
+
+## Testing
+
+```bash
+yarn u_test && yarn i_test 
+```
