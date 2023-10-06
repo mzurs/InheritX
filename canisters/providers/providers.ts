@@ -34,24 +34,6 @@ import {
 
 const testatorCache = new StableBTreeMap<Principal, boolean>(1, 38, 100);
 
-//=============================================CANISTER LIFECYCLE=========================================================
-
-// Runs on first deployment
-$init;
-export function init(): void {
-  console.log("This runs once when the canister is first initialized");
-}
-
-$preUpgrade;
-export function pre_upgrade(): void {
-  console.log("This runs before every canister upgrade");
-}
-
-$postUpgrade;
-export function post_upgrade(): void {
-  console.log("This runs after every canister upgrade");
-}
-
 //=============================================CANISTER PROVIDERS METHODS===================================================
 
 $update;

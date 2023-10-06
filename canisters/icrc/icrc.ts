@@ -48,25 +48,9 @@ import {
 export const icpLedger: Ledger = new Ledger(Principal.fromText(ICP_PRINCIPAL));
 export const ckbtcLedger: ICRC = new ICRC(Principal.fromText(CKBTC_PRINCIPAL));
 
-//=============================================CANISTER LIFECYCLE=========================================================
-
-$init;
-export function init(): void {}
-
-$preUpgrade;
-export function preUpgrade(): void {
-  console.log("ICRC Canister Pre-upgrade");
-}
-
-$postUpgrade;
-export function postUpgrade(): void {
-  console.log("ICRC Canister Post-Upgrade");
-}
-
 //==============================================ICRC CANISTER METHODS===============================================
 
 //----------------------------------------------Query Methods--------------------------------------------------------
-
 
 // list of canisterids and Ledgers IDs that are pass in an environment variable and others
 $query;
