@@ -1,0 +1,26 @@
+type BitcoinNetwork = variant { Mainnet; Regtest; Testnet };
+type ManualReply = variant {
+  txid : text;
+  inSufficientFunds : bool;
+  unAuthorized : bool;
+};
+type ManualReply_1 = record {
+  next_page : opt vec nat8;
+  tip_height : nat32;
+  tip_block_hash : vec nat8;
+  utxos : vec Utxo;
+};
+type Outpoint = record { txid : vec nat8; vout : nat32 };
+type SendRequest = record { destinationAddress : text; identifier : nat32 };
+type Utxo = record { height : nat32; value : nat64; outpoint : Outpoint };
+service : (BitcoinNetwork) -> {
+  bitcoin_transfer : (SendRequest) -> (ManualReply);
+  get_balance : (text) -> (nat64);
+  get_balance_by_identifier : (nat32) -> (nat64);
+  get_bitcoin_network : () -> (BitcoinNetwork) query;
+  get_current_fees_percentiles : () -> (vec nat64);
+  get_p2pkh_address : (nat32) -> (text);
+  get_utxos : (text) -> (ManualReply_1);
+  get_will_canister_id : () -> (text) query;
+  set_will_canister_id : (text) -> (text);
+}
