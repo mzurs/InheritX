@@ -1,11 +1,10 @@
-import { ActorSubclass, Identity } from "@dfinity/agent";
+import { ActorSubclass } from "@dfinity/agent";
 import { Principal } from "azle";
 import { createActor } from "../../../utils/actors";
 import { _SERVICE as _ICPLedger } from "../../../../declarations/icp/icp/icp_ledger.did";
 import { _SERVICE as _ICRC } from "../../../../declarations/icrc/icrc.did";
 import { getCanisterId } from "azle/test";
 import { humanToE8s } from "../../../utils/utils";
-import { idlFactory } from "../../../../declarations/icrc";
 
 export async function icpBalance(
   principal: Principal,

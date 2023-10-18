@@ -1,4 +1,4 @@
-import { ActorSubclass, Identity } from "@dfinity/agent";
+import { Identity } from "@dfinity/agent";
 import { Test } from "azle/test";
 import {
   claimICRCWill,
@@ -8,31 +8,19 @@ import {
   isWillExistsHeirs,
   isWillExistsTestator,
 } from "./functions";
-import { icpBalance } from "./functions/icrc";
-import { e8sToHuman } from "../../utils/utils";
+import { claimBTCWill, createBTCWill, deleteBTCWill } from "./functions/btc";
 
 export async function get_will_tests(
   identifier: number,
   userAIdentity: Identity,
   userBIdentity: Identity
 ): Promise<Test[]> {
-  // console.log("🚀 ~ file: tests.ts:12 ~ identifier:", identifier);
   const icpIdentifier = parseInt(String(Math.random() * 10 ** 5));
 
   const ckbtcIdentifier = parseInt(String(Math.random() * 10 ** 5));
 
-  //Assign User Principals
-  const userAPrincipal = userAIdentity.getPrincipal();
-  const userBPrincipal = userBIdentity.getPrincipal();
-
-  const userABalance = e8sToHuman(
-    await icpBalance(userAIdentity.getPrincipal())
-  );
-  // console.log("🚀 ~ file: tests.ts:16 ~ userABalance:", userABalance);
-  const userBBalance = e8sToHuman(
-    await icpBalance(userBIdentity.getPrincipal())
-  );
-  // console.log("🚀 ~ file: tests.ts:18 ~ userBBalance:", userBBalance);
+  const btcIdentifier = parseInt(String(Math.random() * 10 ** 5));
+  const btcIdentifier1 = parseInt(String(Math.random() * 10 ** 5));
 
   //--------------------------The Test Should be run in sequence in order to be passed
   return [
@@ -187,6 +175,77 @@ export async function get_will_tests(
           ckbtcIdentifier1,
           "ckBTC",
           1
+        );
+      },
+    },
+    {
+      name: "List of Testator Will should be 0",
+      test: async () => {
+        return await compareTotalWill("testator", userAIdentity, 0);
+      },
+    },
+    {
+      name: "List of Heirs Will should be 0",
+      test: async () => {
+        return await compareTotalWill("heirs", userBIdentity, 0);
+      },
+    },
+
+    // -------------------------------BTC-----------------------------------------------
+    {
+      name: `Create a Will from UserA to UserB for 1 BTC with Identifier ${btcIdentifier}`,
+      test: async () => {
+        return await createBTCWill(
+          btcIdentifier,
+          userAIdentity,
+          userBIdentity,
+          1
+        );
+      },
+    },
+    {
+      name: "List of Testator Will should be 1",
+      test: async () => {
+        return await compareTotalWill("testator", userAIdentity, 1);
+      },
+    },
+    {
+      name: "List of Heirs Will should be 1",
+      test: async () => {
+        return await compareTotalWill("heirs", userBIdentity, 1);
+      },
+    },
+    {
+      name: `Delete Will of BTC with Identifier ${btcIdentifier} for Address mmk8VS6G4KrEJKeNZE8sc8Ta1QPxsWWWWg`,
+      test: async () => {
+        const btcAddress = "mmk8VS6G4KrEJKeNZE8sc8Ta1QPxsWWWWg";
+        await new Promise((resolve) => setTimeout(resolve, 15000));
+
+        return await deleteBTCWill(userAIdentity, btcIdentifier, btcAddress);
+      },
+    },
+    {
+      name: "List of Testator Will should be 0",
+      test: async () => {
+        return await compareTotalWill("testator", userAIdentity, 0);
+      },
+    },
+    {
+      name: "List of Heirs Will should be 0",
+      test: async () => {
+        return await compareTotalWill("heirs", userBIdentity, 0);
+      },
+    },
+    {
+      name: `Initiate Claim of 1 BTC From User B with Identifier ${btcIdentifier1} for Address n3tf5qn6WfoWEk85xoS5PDR9FvfExZTDaw`,
+      test: async () => {
+        // mineToAddress(1);
+        return await claimBTCWill(
+          userAIdentity,
+          userBIdentity,
+          btcIdentifier1,
+          1,
+          "n3tf5qn6WfoWEk85xoS5PDR9FvfExZTDaw"
         );
       },
     },

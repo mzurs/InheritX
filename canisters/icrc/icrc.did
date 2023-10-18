@@ -69,6 +69,5 @@ service : () -> {
   icrc_icp_fee : () -> (ManualReply_3) query;
   icrc_icp_transfer : (nat32, principal) -> (ManualReply_4);
   list_canister_ids : () -> (vec record { text; text }) query;
-  set_will_canister_id : (text) -> (text);
   verify_icrc_controller : (opt principal) -> (bool) query;
 }

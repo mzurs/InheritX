@@ -6,8 +6,6 @@ import {
 } from "../../../../declarations/will/will.did";
 import { createActor } from "../../../utils/actors";
 import { createRandomIdentity } from "../../../utils/utils";
-// import { createActor } from "../../../../declarations/will";
-// import { create_actor } from "../../utils/utils";
 
 //create users for will canister
 export async function createUsers(

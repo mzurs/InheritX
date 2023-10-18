@@ -1,5 +1,34 @@
 type AddUserDetails = variant { userExists : bool; success : bool };
-type CreateWillArgs = variant { icrc : ICRCCreateWillArgs };
+type BTCClaimWill = variant {
+  isClaimed : bool;
+  claimError : text;
+  tokenTickerNotSupported : bool;
+  btcClaimResult : _InlineBTCClaimWillBtcClaimResult;
+};
+type BTCCreateWill = variant {
+  identifierUsed : bool;
+  tokenTickerNotSupported : text;
+  success : bool;
+  userNotExists : bool;
+};
+type BTCCreateWillArgs = record {
+  heirs : principal;
+  willName : text;
+  willDescription : text;
+  tokenTicker : text;
+  amountInSats : nat;
+  identifier : nat32;
+};
+type BTCDeleteWill = variant {
+  isClaimed : bool;
+  retainError : text;
+  tokenTickerNotSupported : bool;
+  btcRetainResult : _InlineBTCDeleteWillBtcRetainResult;
+};
+type CreateWillArgs = variant {
+  btc : BTCCreateWillArgs;
+  icrc : ICRCCreateWillArgs;
+};
 type GetHeirWills = variant { wills : vec Will; noWillsExists : bool };
 type GetTestatorWills = variant {
   userNotExists : bool;
@@ -16,12 +45,6 @@ type ICRCClaimWill = variant {
   claimError : text;
   tokenTickerNotSupported : bool;
   icpClaimResult : _InlineICRCClaimWillIcpClaimResult;
-};
-type ICRCCreateWill = variant {
-  identifierUsed : bool;
-  tokenTickerNotSupported : text;
-  success : bool;
-  userNotExists : bool;
 };
 type ICRCCreateWillArgs = record {
   heirs : principal;
@@ -44,8 +67,10 @@ type ManualReply = variant {
   willNotExists : bool;
 };
 type ManualReply_1 = variant {
+  btc : BTCClaimWill;
   icrc : ICRCClaimWill;
   claimErrorFromProvider : text;
+  addressNull : bool;
   claimErrorFromCanisterCall : text;
   claimError : bool;
   willNotExists : bool;
@@ -53,14 +78,17 @@ type ManualReply_1 = variant {
   willTypeNotSupported : bool;
 };
 type ManualReply_2 = variant {
-  icrc : ICRCCreateWill;
+  btc : BTCCreateWill;
+  icrc : BTCCreateWill;
   userNotExists : bool;
   willTypeNotSupported : bool;
 };
 type ManualReply_3 = variant {
+  btc : BTCDeleteWill;
   identifierUsed : bool;
   icrc : ICRCDeleteWill;
   unAuthorizedTestator : bool;
+  addressNull : bool;
   willNotExists : bool;
   userNotExists : bool;
   willTypeNotSupported : bool;
@@ -93,6 +121,16 @@ type Will = record {
   identifier : nat32;
 };
 type _AzleResult = variant { Ok : Will; Err : text };
+type _InlineBTCClaimWillBtcClaimResult = record {
+  claimBTCMessage : text;
+  claimBTCError : opt text;
+  success : bool;
+};
+type _InlineBTCDeleteWillBtcRetainResult = record {
+  retainBTCError : opt text;
+  retainBTCMessage : text;
+  success : bool;
+};
 type _InlineICRCClaimWillCkbtcClaimResult = record {
   success : bool;
   claimCKBTCMessage : text;
@@ -119,17 +157,18 @@ type userDetailsArgs = record {
 service : () -> {
   add_identifier_to_mapping : (principal, principal, nat32) -> ();
   add_user_details : (userDetailsArgs) -> (AddUserDetails);
-  bitcoin_get_balance : (text) -> (nat64);
   canisterBalance : () -> (nat64) query;
   check_death_by_identifier : (nat32) -> (ManualReply);
-  claim_will : (nat32, text) -> (ManualReply_1);
+  claim_will : (nat32, text, opt text) -> (ManualReply_1);
   create_will : (CreateWillArgs, text) -> (ManualReply_2);
-  delete_will : (nat32, text) -> (ManualReply_3);
+  delete_will : (nat32, text, opt text) -> (ManualReply_3);
   get_all_identifiers : () -> (vec record { nat32; principal }) query;
   get_all_wills : () -> (vec record { nat32; Will }) query;
   get_all_willsT : () -> (vec record { principal; vec float64 }) query;
+  get_bitcoin_canister_id : () -> (text) query;
   get_heirs_wills_by_princicpal : (principal) -> (opt vec nat32) query;
   get_icrc_canister_id : () -> (text) query;
+  get_providers_canister_id : () -> (text) query;
   get_testator_wills_by_princicpal : (principal) -> (opt vec nat32) query;
   get_user_by_princicpal : (principal) -> (text) query;
   get_user_details : () -> (GetUserDetails) query;
@@ -145,6 +184,5 @@ service : () -> {
   remove_identifier_from_mapping : (principal, principal, nat32) -> ();
   report_death_by_base64Id : (nat32, text) -> (ManualReply_4);
   request_random_will_identifier : () -> (nat32);
-  set_icrc_canister_id : (text) -> (text);
   update_user_details : (userDetailsArgs) -> (UpdateUserDetails);
 }

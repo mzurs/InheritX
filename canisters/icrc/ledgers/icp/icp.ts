@@ -12,17 +12,14 @@ import {
 import {
   ICRC1Account,
   ICRC1TransferArgs,
-  ICRC1TransferError,
 } from "azle/canisters/icrc";
 import {
   binaryAddressFromPrincipal,
   Tokens,
   TransferArgs,
-  TransferResult,
 } from "azle/canisters/ledger";
 import { getIdentifierBlob, icpLedger } from "../../icrc";
 import { ICPTRANSFER, ICRCICPTRANSFER } from "../../utils/types";
-import { WILL_CANISTER_ID } from "../../utils/utils";
 
 //==============================================ICP Ledger METHODS===============================================
 
@@ -66,6 +63,8 @@ export async function icrc_icp_transfer(
   identifier: nat32,
   to: Principal
 ): Promise<ICRCICPTRANSFER> {
+  const WILL_CANISTER_ID = process.env.WILL_CANISTER_ID!;
+
   // Only authorized principal can initiate this transfer
   if (ic.caller().toText() != WILL_CANISTER_ID) {
     return {
@@ -140,6 +139,8 @@ export async function icp_transfer(
   identifier: nat32,
   to: Principal
 ): Promise<ICPTRANSFER> {
+  const WILL_CANISTER_ID = process.env.WILL_CANISTER_ID!;
+
   if (ic.caller().toText() != WILL_CANISTER_ID) {
     return { unAuthorized: true };
   }

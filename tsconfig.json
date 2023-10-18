@@ -10,5 +10,5 @@
     "esModuleInterop": true
   }
   ,
-  "exclude": ["canisters/bitcoin"]
+  // "exclude": ["canisters/bitcoin"]
 }

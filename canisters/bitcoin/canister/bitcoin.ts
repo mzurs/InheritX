@@ -20,12 +20,7 @@ import {
 import * as bitcoinApi from "./apis";
 import * as bitcoinWallet from "./wallet/wallet";
 import { BitcoinTransfer, SendRequest } from "./utils/types";
-import {
-  WILL_CANISTER_ID,
-  getIdentifierBlob,
-  set_will_canister_id,
-} from "./utils/utils";
-import { get_will_canister_id } from "./utils/utils";
+import { get_will_canister_id, getIdentifierBlob } from "./utils/utils";
 //=====================================================VARIABLES===========================================================
 
 // The current Bitcoin Network the canister using
@@ -155,7 +150,7 @@ $update;
 export async function bitcoin_transfer(
   request: SendRequest
 ): Promise<BitcoinTransfer> {
-  if (ic.caller().toText() !== WILL_CANISTER_ID) {
+  if (ic.caller().toText() !== process.env.WILL_CANISTER_ID!) {
     return {
       unAuthorized: true,
     };
@@ -207,4 +202,4 @@ export async function bitcoin_transfer(
 }
 
 //====================================EXPORTS=================================
-export { get_will_canister_id, set_will_canister_id };
+export { get_will_canister_id };

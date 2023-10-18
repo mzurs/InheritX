@@ -28,13 +28,19 @@ InheritX is a blockchain-based application developed on <b>Internet Computer (IC
    yarn install
    ```
 
-2. Start local replica
+2. Start Bitcoin Node
 
    ```bash
-    dfx start --clean
+   yarn bitcoin_node
    ```
 
-3. Deploy Canisters (run the command in new terminal)
+3. Start local replica ( in new terminal )
+
+   ```bash
+   yarn dfx_start
+   ```
+
+4. Deploy Canisters ( in new terminal )
 
    ```bash
    yarn deploy
@@ -42,14 +48,50 @@ InheritX is a blockchain-based application developed on <b>Internet Computer (IC
 
 ## Testing
 
-1. Setup Canisters
+#### Note
+
+##### Testing is done in separate way. Following are the requirements
+
+- Install `gnome-terminal`, by running
+
+  ```bash
+  sudo apt-get install gnome-terminal
+  ```
+
+- Stop replica by running
+
+  ```bash
+  yarn cleanup:all
+  ```
+
+Start Testing
+
+1. Test Will Canister
 
    ```bash
-   yarn pretest
+   yarn test:will
    ```
 
-2. Test Canisters
+2. Test ICRC Canister
 
    ```bash
-   yarn u_test && yarn i_test
+   yarn test:icrc
+   ```
+
+3. Test Providers Canister
+
+   ```bash
+   yarn test:providers
+   ```
+
+4. Test Bitcoin Canister
+
+   ```bash
+   yarn test:btc
+   ```
+
+5. Test Canisters
+
+   ```bash
+   yarn test:all
    ```

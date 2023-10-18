@@ -1,14 +1,4 @@
-import {
-  CallResult,
-  Principal,
-  Result,
-  Service,
-  nat,
-  nat32,
-  serviceQuery,
-  serviceUpdate,
-} from "azle";
-import { Will } from "../canisters/will/utils/types";
+import { CallResult, Principal, Service, nat32, serviceUpdate } from "azle";
 import {
   ICPTRANSFER,
   ICRCCKBTCTRANSFER,
@@ -28,7 +18,6 @@ export class ICRCCANISTER extends Service {
   @serviceUpdate
   icrc_ckbtc_transfer: (
     identifier: nat32,
-    to: Principal,
-    amount: nat
+    to: Principal
   ) => CallResult<ICRCCKBTCTRANSFER>;
 }

@@ -1,13 +1,22 @@
 {
   "scripts": {
-    "pretest": "AZLE_REBUILD=true ts-node --transpile-only --ignore=false test/pretest.ts",
-    "upgrade_canisters": "AZLE_REBUILD=true ts-node --transpile-only --ignore=false test/upgradeCanisters.ts",
-    "unit_test_will": "AZLE_REBUILD=true ts-node --transpile-only --ignore=false test/unit/will/test.ts",
-    "unit_test_providers": "AZLE_REBUILD=true ts-node --transpile-only --ignore=false test/unit/providers/test.ts",
-    "unit_test_icrc": "AZLE_REBUILD=true ts-node --transpile-only --ignore=false test/unit/icrc/test.ts",
+    "unit_test_will": "AZLE_REBUILD=true ts-node --transpile-only --ignore=false test/unit/will/pretest.ts",
+    "unit_test_providers": "AZLE_REBUILD=true ts-node --transpile-only --ignore=false test/unit/providers/pretest.ts",
+    "unit_test_icrc": "AZLE_REBUILD=true ts-node --transpile-only --ignore=false test/unit/icrc/pretest.ts",
+    "unit_test_bitcoin_canister": "AZLE_REBUILD=true ts-node --transpile-only --ignore=false test/unit/bitcoin/pretest.ts",
     "i_test": "AZLE_REBUILD=true ts-node --transpile-only --ignore=false test/integration/will/test.ts",
-    "deploy": "yarn pretest",
-    "u_test":"yarn unit_test_will && yarn unit_test_icrc"
+    "test:will": "yarn unit_test_will",
+    "test:providers": "yarn unit_test_providers",
+    "test:icrc": "yarn unit_test_icrc",
+    "test:btc": "yarn unit_test_bitcoin_canister",
+    "test:all": "yarn i_test",
+    "dfx_start": "dfx start --clean --enable-bitcoin",
+    "bitcoin_node:start": "bash scripts/dev/btc/install_bitcoind.sh start",
+    "bitcoin_node:download": "bash scripts/dev/btc/install_bitcoind.sh download",
+    "deploy": "bash scripts/dev/dev.sh install || true",
+    "deploy:upgrade": "bash scripts/dev/dev.sh upgrade",
+    "cleanup": "bash scripts/dev/cleanup.sh",
+    "cleanup:all": "bash scripts/dev/cleanup.sh all"
   },
   "dependencies": {
     "@dfinity/candid": "^0.19.2",

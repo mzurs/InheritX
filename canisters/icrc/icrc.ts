@@ -32,11 +32,9 @@ import {
   icrc_icp_transfer,
 } from "./ledgers/icp/icp";
 import {
-  WILL_CANISTER_ID,
   canisterBalance128,
   getSubAccountArray,
   get_will_canister_id,
-  set_will_canister_id,
 } from "./utils/utils";
 import {
   ckbtc_balance_of,
@@ -57,7 +55,7 @@ $query;
 export function list_canister_ids(): Vec<Tuple<[string, string]>> {
   // const willCanisterID=["WILL CANISTER",process.env.WILL_CANISTER_ID]
   const list: Vec<Tuple<[string, string]>> = [
-    ["WILL CANISTER", WILL_CANISTER_ID],
+    ["WILL CANISTER", process.env.WILL_CANISTER_ID!],
     ["ICP_Ledger", ICP_PRINCIPAL],
     ["CKBTC_Ledger", CKBTC_PRINCIPAL],
   ];
@@ -124,7 +122,6 @@ export function getIdentifierBlob(identifier: nat32): blob {
 export {
   //utils
   get_will_canister_id,
-  set_will_canister_id,
   canisterBalance128,
   //icp
   icrc_icp_fee,

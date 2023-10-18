@@ -22,5 +22,4 @@ service : (BitcoinNetwork) -> {
   get_p2pkh_address : (nat32) -> (text);
   get_utxos : (text) -> (ManualReply_1);
   get_will_canister_id : () -> (text) query;
-  set_will_canister_id : (text) -> (text);
 }

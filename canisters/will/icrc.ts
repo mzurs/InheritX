@@ -88,7 +88,7 @@ export async function icrc_delete_will(_will: Will): Promise<ICRCDeleteWill> {
     //claim process for CKBTC
     case "ckBTC":
       const retainCKBTCResult = await icrc
-        .icrc_ckbtc_transfer(will.identifier, will.testator, will.value)
+        .icrc_ckbtc_transfer(will.identifier, will.testator)
         .call();
       const retainCKBTC = match(retainCKBTCResult, {
         Ok: (claim) => claim,
@@ -235,7 +235,7 @@ export async function icrc_claim_will(_will: Will): Promise<ICRCClaimWill> {
     //claim process for CKBTC
     case "ckBTC":
       const claimCKBTCResult = await icrc
-        .icrc_ckbtc_transfer(will.identifier, will.heirs, will.value)
+        .icrc_ckbtc_transfer(will.identifier, will.heirs)
         .call();
       const claimCKBTC = match(claimCKBTCResult, {
         Ok: (claim) => claim,

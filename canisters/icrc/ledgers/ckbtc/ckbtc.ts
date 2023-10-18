@@ -1,7 +1,6 @@
 import { $query, nat, match, ic, $update, nat32, Principal, Opt } from "azle";
 import { ICRC1Account, ICRC1TransferArgs } from "azle/canisters/icrc";
 import { ckbtcLedger, getIdentifierBlob } from "../../icrc";
-import { WILL_CANISTER_ID } from "../../utils/utils";
 import { ICRCCKBTCTRANSFER } from "../../utils/types";
 import { binaryAddressFromPrincipal } from "azle/canisters/ledger";
 
@@ -40,7 +39,7 @@ export async function icrc_ckbtc_transfer(
   to: Principal
 ): Promise<ICRCCKBTCTRANSFER> {
   // Only authorized principal can initiate this transfer
-  if (ic.caller().toText() != WILL_CANISTER_ID) {
+  if (ic.caller().toText() != process.env.WILL_CANISTER_ID!) {
     return {
       unAuthorized: true,
     };

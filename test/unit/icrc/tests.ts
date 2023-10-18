@@ -15,31 +15,17 @@ import {
 } from "./functions/ckbtc";
 import { randomIdentifier } from "../../utils/utils";
 
-export function get_icrc_tests(
-  icrc: ActorSubclass<_SERVICE>,
+export async function get_icrc_tests(
   userA_icrc: ActorSubclass<_SERVICE>,
   userAIdentity: Identity,
-  userB_icrc: ActorSubclass<_SERVICE>,
   userBIdentity: Identity
-): Test[] {
+): Promise<Test[]> {
   const identifier = randomIdentifier();
   //--------------------------The Test Should be run in sequence in order to be passed
   return [
-    {
-      //==================================ICP=====================================================
+    // {
+    //   //==================================ICP=====================================================
 
-      // set user A principal a valid principal to initate call to ICRC methods.
-      // Later it'll be replaced by will canister Id when we perform stage testing
-      name: "Set icrc Canister Id From user A ICRC identity ",
-      test: async () => {
-        return {
-          Ok:
-            (await icrc.set_will_canister_id(
-              userAIdentity.getPrincipal().toText()
-            )) === userAIdentity.getPrincipal().toText(),
-        };
-      },
-    },
     {
       name: `PrincipalA => ${userAIdentity
         .getPrincipal()
@@ -120,15 +106,6 @@ export function get_icrc_tests(
       },
     },
 
-    //Pausing this test as right now Canisrter subaccount is not being used for ckBTC assets
-
-    // {
-    //   name: `Canister Principal should contain 0.999999 ckBTC`,
-    //   test: async () => {
-    //     // const identifier: number = 172_696_504;
-    //     return await compareIcrcCanistersIdentifierBalanceckBTC(9999990);
-    //   },
-    // },
     {
       name: `Transfer From ICRC Canister to Principal=> ${userBIdentity
         .getPrincipal()

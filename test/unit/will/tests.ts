@@ -9,10 +9,10 @@ import {
   update_users_without_create_user,
 } from "./functions/users";
 
-export function get_will_tests(
+export async function get_will_tests(
   userAIdentity: Identity,
   userBIdentity: Identity
-): Test[] {
+):Promise< Test[]> {
   return [
     //--------------------------------------------------USERS----------------------------------------------------------
     {

@@ -1,17 +1,18 @@
 {
-    "canisters": {
-        "bitcoin_canister": {
-            "type": "custom",
-            "build": "npx azle bitcoin_canister",
-            "root": "canister",
-            "ts": "canister/bitcoin.ts",
-            "candid": "canister/bitcoin.did",
-            "wasm": ".azle/bitcoin_canister/bitcoin_canister.wasm.gz",
-            "declarations": {
-                "output": "test/dfx_generated/bitcoin_canister",
-                "node_compatibility": true
-            },
-            "opt_level": "1"
-        }
+  "canisters": {
+    "bitcoin_canister": {
+      "type": "custom",
+      "build": "npx azle bitcoin_canister",
+      "root": "canister",
+      "ts": "canister/bitcoin.ts",
+      "candid": "canister/bitcoin.did",
+      "wasm": ".azle/bitcoin_canister/bitcoin_canister.wasm.gz",
+      "declarations": {
+        "output": "declarations/bitcoin_canister",
+        "node_compatibility": true
+      },
+      "opt_level": "1",
+      "env": ["WILL_CANISTER_ID"]
     }
+  }
 }

@@ -1,15 +1,18 @@
 #!/bin/bash
 
-dfx identity use minter
 # Change the variable to the principal that can mint and burn tokens.
-export MINTER_PRINCIPAL=$(dfx identity get-principal)
+dfx identity use minter
+MINTER_PRINCIPAL=$(dfx identity get-principal)
+export MINTER_PRINCIPAL
 
 dfx identity use default
-export LEDGER_ACC=$(dfx identity get-principal)
+LEDGER_ACC=$(dfx identity get-principal)
+export LEDGER_ACC
 
 # Change the variable to the principal that controls archive canisters.
 dfx identity use default
-export ARCHIVE_CONTROLLER=$(dfx identity get-principal)
+ARCHIVE_CONTROLLER=$(dfx identity get-principal)
+export ARCHIVE_CONTROLLER
 
 export TOKEN_NAME="ckBTC"
 export TOKEN_SYMBOL="ckBTC"

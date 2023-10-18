@@ -8,9 +8,9 @@ import {
   check_testator_details_with_wrong_id,
 } from "./functions/providers";
 
-export function get_providers_tests(
+export async function get_providers_tests(
   providers: ActorSubclass<_SERVICE>
-): Test[] {
+): Promise<Test[]> {
   return [
     {
       name: "Check whether Testator Died with Wrong Principal => ",

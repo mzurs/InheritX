@@ -21,6 +21,7 @@ import {
   _SERVICE,
 } from "../../../../declarations/ckbtc/ckbtc/ckbtc_ledger.did";
 import { Principal } from "@dfinity/principal";
+
 // function to create will test
 export async function createICRCWill(
   asset: string,
@@ -200,7 +201,8 @@ export async function deleteWill(
 
   const deleteWillResult: ManualReply_3 = await actor_will_user.delete_will(
     identifier,
-    willType
+    willType,
+    []
   );
   //console.log("🚀 ~ file: index.ts:178 ~ deleteWillResult:", deleteWillResult);
   if (asset === "ICP") {
@@ -290,7 +292,7 @@ export async function claimICRCWill(
       "ckbtc_ledger",
       userAIdentity
     );
-    const subAccount=getIdentifierBlob(identifier)
+    const subAccount = getIdentifierBlob(identifier);
     const transferArgs: TransferArg = {
       from_subaccount: [],
       to: {
@@ -334,7 +336,8 @@ export async function claimICRCWill(
       const willType = "ICRC";
       const claimWillResult: ManualReply_1 = await actor_will_userB.claim_will(
         identifier,
-        willType
+        willType,
+        []
       );
       // //console.log(
       //   "🚀 ~ file: index.ts:253 ~ claimWillResult:",

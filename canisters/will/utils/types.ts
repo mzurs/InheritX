@@ -1,5 +1,6 @@
 import {
   Duration,
+  Opt,
   Principal,
   Record,
   Variant,
@@ -111,20 +112,20 @@ export type GetHeirWills = Variant<{
 
 export type CreateWillArgs = Variant<{
   icrc: ICRCCreateWillArgs;
+  btc: BTCCreateWillArgs;
 }>;
 
 export type CreateWill = Variant<{
   userNotExists: boolean;
   willTypeNotSupported: boolean;
   icrc: ICRCCreateWill;
-  // btc: BTCCreateWill;
+  btc: BTCCreateWill;
 }>;
-
-export type ClaimICRCWill = {};
 
 export type ClaimWill = Variant<{
   icrc: ICRCClaimWill;
-  // btc: ClaimBTCWill;
+  btc: BTCClaimWill;
+  addressNull: boolean;
   willNotExists: boolean;
   unAuthorizedClaimer: boolean;
   claimError: boolean;
@@ -153,7 +154,9 @@ export type DeleteWill = Variant<{
   unAuthorizedTestator: boolean;
   willTypeNotSupported: boolean;
   willNotExists: boolean;
+  addressNull: boolean;
   icrc: ICRCDeleteWill;
+  btc: BTCDeleteWill;
 }>;
 
 export type ReportDeathByBase64Id = Variant<{
@@ -173,4 +176,43 @@ export type CheckDeathByIdentifier = Variant<{
 export type ClaimDeathOfTestatorByBase64ID = Variant<{
   noWillExists: boolean;
   errorMessage: string;
+}>;
+
+//============btc
+
+export type BTCCreateWillArgs = Record<{
+  willName: string;
+  willDescription: string;
+  identifier: nat32;
+  heirs: Principal;
+  tokenTicker: string;
+  amountInSats: nat;
+}>;
+export type BTCCreateWill = Variant<{
+  userNotExists: boolean;
+  success: boolean;
+  tokenTickerNotSupported: string;
+  identifierUsed: boolean;
+}>;
+
+export type BTCDeleteWill = Variant<{
+  isClaimed: boolean;
+  tokenTickerNotSupported: boolean;
+  retainError: string;
+  btcRetainResult: Record<{
+    retainBTCMessage: string;
+    success: boolean;
+    retainBTCError: Opt<string>;
+  }>;
+}>;
+
+export type BTCClaimWill = Variant<{
+  isClaimed: boolean;
+  tokenTickerNotSupported: boolean;
+  claimError: string;
+  btcClaimResult: Record<{
+    claimBTCMessage: string;
+    success: boolean;
+    claimBTCError: Opt<string>;
+  }>;
 }>;

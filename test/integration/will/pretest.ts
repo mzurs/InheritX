@@ -1,6 +1,4 @@
-import { getCanisterId } from "azle/test";
 import { execSync } from "child_process";
-import { Principal } from "@dfinity/principal";
 
 type PretestParams = {
   principalA: string;
@@ -10,19 +8,10 @@ type PretestParams = {
 export async function pretestIcrc(args: PretestParams) {
   await new Promise((resolve) => setTimeout(resolve, 2000));
 
-  const willCanisterId = getCanisterId("will");
   //switching to default identity
   execSync(`dfx identity use default`, {
     stdio: "inherit",
   });
-
-  // set the will canister Id as a authorized canister id to invoke functions calls
-  execSync(
-    `dfx canister call icrc set_will_canister_id '(\"${willCanisterId}\")'`,
-    {
-      stdio: "inherit",
-    }
-  );
 
   // Send the 10 ICP from default dfx identity to User Principal A
   execSync(

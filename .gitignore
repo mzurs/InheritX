@@ -6,4 +6,5 @@ node_modules
 declarations
 
 .bitcoin
+bitcoin.tar.gz
 bitcoin-23.0-x86_64-linux-gnu.tar.gz

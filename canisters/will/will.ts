@@ -21,6 +21,9 @@ import {
   ClaimWill,
   DeleteWill,
   ClaimDeathOfTestatorByBase64ID,
+  ICRCCreateWillArgs,
+  BTCCreateWillArgs,
+  BTCDeleteWill,
 } from "./utils/types";
 import {
   add_user_details,
@@ -30,20 +33,25 @@ import {
   get_user_by_princicpal,
 } from "./users";
 import { icrc_claim_will, icrc_create_will, icrc_delete_will } from "./icrc";
-import { canisterBalance } from "./utils/utils";
-import { bitcoin_get_balance } from "./btc";
+import {
+  canisterBalance,
+  get_icrc_canister_id,
+  get_bitcoin_canister_id,
+  get_providers_canister_id,
+} from "./utils/utils";
 import {
   check_death_by_identifier,
   providers,
   report_death_by_base64Id,
 } from "./providers";
-import { will } from "../../declarations/will";
+import { btc_claim_will, btc_create_will, btc_delete_will } from "./btc";
 
 //=============================================Stable Variables===========================================================
 
 //Store user details before creating any will
 export let users = new StableBTreeMap<Principal, UserDetails>(1, 38, 500_000);
 
+users.items();
 // Store digital will inside StableMemory with unique will_identifier
 export let wills = new StableBTreeMap<nat32, Will>(2, 38, 500_000);
 
@@ -360,18 +368,24 @@ export async function create_will(
       userNotExists: true,
     };
   } else {
+    const willArgs = match(args, {
+      icrc: (icrc) => icrc,
+      btc: (btc) => btc,
+    });
     switch (willType) {
       case "ICRC":
         //will for all ICRC suppported assets
-        const icrcWill = await icrc_create_will(args.icrc);
+        const icrcWill = await icrc_create_will(willArgs as ICRCCreateWillArgs);
         return {
           icrc: icrcWill,
         };
       case "BTC":
         // will for Bitcoin asset
+        const btcWill = await btc_create_will(willArgs as BTCCreateWillArgs);
         return {
-          willTypeNotSupported: true,
+          btc: btcWill,
         };
+
       default:
         // default always result in not supported type
         return {
@@ -385,7 +399,8 @@ export async function create_will(
 $update;
 export async function delete_will(
   identifier: nat32,
-  willType: string
+  willType: string,
+  btcAddress: Opt<string>
 ): Promise<DeleteWill> {
   //check user existence
   if (!is_user_exists(ic.caller())) {
@@ -424,8 +439,21 @@ export async function delete_will(
             icrc: icrcDeleteWill,
           };
         case "BTC":
+          const address = match(btcAddress, {
+            Some: (address) => address,
+            None: () => null,
+          });
+          if (!address) {
+            return {
+              addressNull: true,
+            };
+          }
+          const btcDeleteWill: BTCDeleteWill = await btc_delete_will(
+            will,
+            address
+          );
           return {
-            willTypeNotSupported: true,
+            btc: btcDeleteWill,
           };
         default:
           return {
@@ -445,7 +473,8 @@ export async function delete_will(
 $update;
 export async function claim_will(
   identifier: nat32,
-  willType: string
+  willType: string,
+  btcAddress: Opt<string>
 ): Promise<ClaimWill> {
   // check the identifier exists inside a Stable Memory
   if (!wills.containsKey(identifier)) {
@@ -496,8 +525,18 @@ export async function claim_will(
           icrc: claimWill,
         };
       case "BTC":
+        const address = match(btcAddress, {
+          Some: (address) => address,
+          None: () => null,
+        });
+        if (!address) {
+          return {
+            addressNull: true,
+          };
+        }
+        const claimBTCWill = await btc_claim_will(will, address);
         return {
-          willTypeNotSupported: true,
+          btc: claimBTCWill,
         };
       default:
         return {
@@ -512,6 +551,9 @@ export async function claim_will(
 }
 //===================================================EXPORTS==================================================
 export {
+  //icrc
+  get_icrc_canister_id,
+
   //users
   get_user_details,
   add_user_details,
@@ -522,9 +564,10 @@ export {
   canisterBalance,
 
   //btc
-  bitcoin_get_balance,
+  get_bitcoin_canister_id,
 
   //providers
   check_death_by_identifier,
   report_death_by_base64Id,
+  get_providers_canister_id,
 };
