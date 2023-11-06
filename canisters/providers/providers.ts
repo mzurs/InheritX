@@ -66,7 +66,12 @@ export async function check_testator_details_with_id(
       method: {
         get: null,
       },
-      headers: [],
+      headers: [
+        {
+          name: "User-Agent",
+          value: "Thunder Client (https://www.thunderclient.com)",
+        },
+      ],
       body: Opt.None,
       transform: Opt.Some({
         function: [ic.id(), "testator_details_transform"],

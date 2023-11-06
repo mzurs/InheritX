@@ -2,7 +2,6 @@
 
 echo "$1" "Blocks Mined for" "$2"
 
-
 #  Address n2dcQfuwFw7M2UYzLfM6P7DwewsQaygb8S used to mine addtional 101 blocks
 
 if [[ $2 == "n2dcQfuwFw7M2UYzLfM6P7DwewsQaygb8S" ]]; then
