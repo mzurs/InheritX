@@ -1,9 +1,6 @@
 import {
   $query,
   $update,
-  $init,
-  $preUpgrade,
-  $postUpgrade,
   StableBTreeMap,
   match,
   Opt,
@@ -17,15 +14,12 @@ import {
   managementCanister,
 } from "azle/canisters/management";
 import decodeUtf8 from "decode-utf8";
-import {
-  CheckTestatorDetailsWithID,
-  Person,
-  TestatorDetails,
-} from "./utils/types";
+import { CheckTestatorDetailsWithID, TestatorDetails } from "./utils/types";
 import {
   MATCHID_URL,
   canisterBalance128,
   check_first_names,
+  get_will_canister_id,
 } from "./utils/utils";
 
 //=============================================Stable Variables===========================================================
@@ -36,7 +30,7 @@ const testatorCache = new StableBTreeMap<Principal, boolean>(1, 38, 100);
 
 //=============================================CANISTER PROVIDERS METHODS===================================================
 
-$update;
+$query;
 export function get_matchid_url(): string {
   return MATCHID_URL!;
 }
@@ -57,7 +51,27 @@ export async function check_testator_details_with_id(
   base64Id: string,
   testatorDetails: TestatorDetails
 ): Promise<CheckTestatorDetailsWithID> {
-  const URL = MATCHID_URL + "id/" + base64Id;
+  const WILL_CANISTER_ID = process.env.WILL_CANISTER_ID!;
+
+  // Only authorized principal can initiate this transfer
+  if (ic.caller().toText() != WILL_CANISTER_ID) {
+    return {
+      result: false,
+      errorMessage: Opt.None,
+      message: Opt.Some("UnAuthorized Access"),
+    };
+  }
+
+  const URL = MATCHID_URL + base64Id;
+
+  // check the length of a base64Id
+  if (base64Id.length != 12) {
+    return {
+      result: false,
+      errorMessage: Opt.None,
+      message: Opt.Some("Length of Base64 Id should be 12"),
+    };
+  }
 
   const response = await managementCanister
     .http_request({
@@ -66,12 +80,7 @@ export async function check_testator_details_with_id(
       method: {
         get: null,
       },
-      headers: [
-        {
-          name: "User-Agent",
-          value: "Thunder Client (https://www.thunderclient.com)",
-        },
-      ],
+      headers: [],
       body: Opt.None,
       transform: Opt.Some({
         function: [ic.id(), "testator_details_transform"],
@@ -176,18 +185,46 @@ export async function check_testator_details_with_id(
           errorMessage: Opt.None,
           result: false,
           message: Opt.Some(
-            ` "Testator Details Not Verified from MatchID Database"`
+            "Testator Details Not Verified with MatchID Database"
           ),
         };
       }
     } else {
       return {
         result: false,
-        message: Opt.Some(`Testator Number should be 1`),
+        message: Opt.Some(`Testator Details Not Found`),
         errorMessage: Opt.None,
       };
     }
   }
+}
+
+// Function to verify Testator Details With The Details Retrieve From base64_Identifier
+$update;
+export async function check_api(url: string): Promise<string> {
+  const URL = url;
+
+  const response = await managementCanister
+    .http_request({
+      url: URL,
+      max_response_bytes: Opt.Some(2_000n),
+      method: {
+        get: null,
+      },
+      headers: [],
+      body: Opt.None,
+      transform: Opt.Some({
+        function: [ic.id(), "testator_details_transform"],
+        context: Uint8Array.from([]),
+      }),
+    })
+    .cycles(100_000_000n)
+    .call();
+
+  return match(response, {
+    Ok: (res) => decodeUtf8(Uint8Array.from(res.body)),
+    Err: (err) => err,
+  });
 }
 
 // HTTPs Outcalls Transformer
@@ -195,11 +232,21 @@ $query;
 export function testator_details_transform(
   args: HttpTransformArgs
 ): HttpResponse {
-  return {
-    ...args.response,
+  const res: HttpResponse = {
+    status: args.response.status,
+    body: Uint8Array.from([]),
     headers: [],
   };
+
+  if (res.status === 200n) {
+    res.body = args.response.body;
+  } else {
+    console.log("Error Recieved From API ", args);
+  }
+
+  return res;
 }
 
 //===============================================EXPORTS===========================================================
-export { canisterBalance128 };
+
+export { canisterBalance128, get_will_canister_id };

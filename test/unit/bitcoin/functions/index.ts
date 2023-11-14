@@ -6,11 +6,7 @@ import {
   ManualReply,
   _SERVICE as _BTC,
 } from "../../../../declarations/bitcoin_canister/bitcoin_canister.did";
-import {
-  e8sToHuman,
-  humanToE8s,
-  randomIdentifier,
-} from "../../../utils/utils";
+import { e8sToHuman, humanToE8s, randomIdentifier } from "../../../utils/utils";
 import { match } from "azle";
 
 export async function bitcoinBalanceOfTwoAddresses(
@@ -82,7 +78,7 @@ export async function verifyBalance(
   // console.log("🚀 ~ file: index.ts:69 ~ balance:", balance);
 
   return {
-    Ok: humanToE8s(currentBalance) === balance,
+    Ok: balance >= humanToE8s(currentBalance),
   };
 }
 

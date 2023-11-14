@@ -46,6 +46,6 @@ InheritX is a blockchain-based application developed on <b>Internet Computer (IC
    yarn deploy
    ```
 
-### Testing Canisters Locally
+### Test Canisters Locally
 
 - See the [TESTING](TESTING.md) document

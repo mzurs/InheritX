@@ -19,10 +19,12 @@ type TestatorDetails = record {
 };
 service : () -> {
   canisterBalance128 : () -> (nat) query;
+  check_api : (text) -> (text);
   check_testator_details_with_id : (principal, text, TestatorDetails) -> (
       ManualReply,
     );
-  get_matchid_url : () -> (text);
+  get_matchid_url : () -> (text) query;
+  get_will_canister_id : () -> (text) query;
   isTestatorDied : (principal) -> (bool) query;
   testator_details_transform : (HttpTransformArgs) -> (HttpResponse) query;
 }

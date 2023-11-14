@@ -16,7 +16,8 @@
     "deploy": "bash scripts/dev/dev.sh install || true",
     "deploy:upgrade": "bash scripts/dev/dev.sh upgrade",
     "cleanup": "bash scripts/dev/cleanup.sh",
-    "cleanup:all": "bash scripts/dev/cleanup.sh all"
+    "cleanup:all": "bash scripts/dev/cleanup.sh all",
+    "btc_wallet_setup":"AZLE_REBUILD=true ts-node --transpile-only --ignore=false test/utils/bitcoin_wallet.ts"
   },
   "dependencies": {
     "@dfinity/candid": "^0.19.2",

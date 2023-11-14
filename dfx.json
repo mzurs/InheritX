@@ -10,7 +10,8 @@
       "declarations": {
         "output": "declarations/providers",
         "node_compatibility": true
-      }
+      },
+      "env": ["WILL_CANISTER_ID"]
     },
     "will": {
       "type": "custom",

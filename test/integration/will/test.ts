@@ -4,6 +4,7 @@ import { pretestIcrc } from "./pretest";
 import { get_will_tests } from "./tests";
 import { _SERVICE as _WILL } from "../../../declarations/will/will.did";
 import { execSync } from "child_process";
+import { configureBitcoinWallet } from "../../utils/bitcoin_wallet";
 
 async function deployCanisters() {
   execSync(`bash scripts/dev/setup_test_nodes.sh`, {
@@ -23,6 +24,9 @@ const pretest = async () => {
     const userBIdentity = Ed25519KeyIdentity.generate();
 
     await deployCanisters();
+
+    await configureBitcoinWallet();
+
     // transfer some amount to user A principal
     await pretestIcrc({
       principalA: userAIdentity.getPrincipal().toText(),
