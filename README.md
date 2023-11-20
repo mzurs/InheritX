@@ -28,10 +28,10 @@ InheritX is a blockchain-based application developed on <b>Internet Computer (IC
    yarn install
    ```
 
-2. Start Bitcoin Node
+2. Download & Start Bitcoin Node
 
    ```bash
-   yarn bitcoin_node
+   yarn bitcoin_node:download && yarn bitcoin_node:start
    ```
 
 3. Start local replica ( in new terminal )
@@ -46,6 +46,20 @@ InheritX is a blockchain-based application developed on <b>Internet Computer (IC
    yarn deploy
    ```
 
-### Test Canisters Locally
+## Testing
 
 - See the [TESTING](TESTING.md) document
+
+## Roadmap
+
+- [x] Countries supported (France)
+- [x] Add Support for $ICP and $ckBTC ledgers
+- [x] Add Support to Direct $BTC integration
+- [x] Test All Canisters
+- [ ] Add other countries
+- [ ] Add Support for $ckETH and $ckERC-20 ledgers
+- [ ] Add Support for Direct $ETH integration
+
+## License
+
+This project is licensed under the MIT license, see LICENSE for details.
