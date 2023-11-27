@@ -7,6 +7,13 @@
 InheritX is a blockchain-based application developed on <b>Internet Computer (ICP) </b> that allows users to create a digital will and bequeath their assets to designated beneficiaries in the event of their death.
 </i>
 
+<br>
+Assets currently supported by InheritX are:
+
+- $BTC
+- $ICP
+- $ckBTC
+
 ### NOTE
 
 - Users who have an [INSEE](https://www.insee.fr/en/accueil) number or living in France are eligible to use this application
@@ -50,16 +57,6 @@ InheritX is a blockchain-based application developed on <b>Internet Computer (IC
 
 - See the [TESTING](TESTING.md) document
 
-## Roadmap
-
-- [x] Countries supported (France)
-- [x] Add Support for $ICP and $ckBTC ledgers
-- [x] Add Support to Direct $BTC integration
-- [x] Test All Canisters
-- [ ] Add other countries
-- [ ] Add Support for $ckETH and $ckERC-20 ledgers
-- [ ] Add Support for Direct $ETH integration
-
 ## License
 
-This project is licensed under the MIT license, see LICENSE for details.
+This project is licensed under the MIT license, see [LICENSE](<[LICENSE](https://github.com/mzurs/InheritX/blob/main/LICENSE)>) for details.
