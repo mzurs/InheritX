@@ -1,12 +1,3 @@
-//! A demo of a very bare-bones bitcoin "wallet".
-//!
-//! The wallet here showcases how bitcoin addresses can be be computed
-//! and how bitcoin transactions can be signed. It is missing several
-//! pieces that any production-grade wallet would have, including:
-//!
-//! * Support for address types that aren't P2PKH.
-//! * Caching spent UTXOs so that they are not reused in future transactions.
-//! * Option to set the fee.
 import { blob, ic, nat64, match, Result, Vec } from "azle";
 import {
   BitcoinNetwork,
@@ -48,9 +39,6 @@ export async function get_p2pkh_address(
   return public_key_to_p2pkh_address(network, publicKey);
 }
 
-/// Sends a transaction to the network that transfers the given amount to the
-/// given destination, where the source of the funds is the canister itself
-/// at the given derivation path.
 export async function bitcoin_transfer(
   network: BitcoinNetwork,
   derivationPath: Vec<blob>,
@@ -61,14 +49,7 @@ export async function bitcoin_transfer(
   // Get fee percentiles from previous transactions to estimate our own fee.
   const feePercentiles = await bitcoinApi.get_current_fees_percentiles(network);
 
-  const feePerByte =
-    feePercentiles.length === 0
-      ? // There are no fee percentiles. This case can only happen on a regtest
-        // network where there are no non-coinbase transactions. In this case,
-        // we use a default of 2000 millisatoshis/byte (i.e. 2 satoshi/byte)
-        2_000n
-      : // Choose the 50th percentile for sending fees.
-        feePercentiles[49];
+  const feePerByte = feePercentiles.length === 0 ? 2_000n : feePercentiles[49];
 
   // Fetch our public key, P2PKH address, and UTXOs.
   const ownPublicKey = await ecdsaApi.ecdsaPublicKey(keyName, derivationPath);
@@ -125,14 +106,6 @@ async function build_transaction(
   amount: Satoshi,
   feePerByte: MillisatoshiPerByte
 ): Promise<BitcoinTransaction> {
-  // We have a chicken-and-egg problem where we need to know the length
-  // of the transaction in order to compute its proper fee, but we need
-  // to know the proper fee in order to figure out the inputs needed for
-  // the transaction.
-  //
-  // We solve this problem iteratively. We start with a fee of zero, build
-  // and sign a transaction, see what its size is, and then update the fee,
-  // rebuild the transaction, until the fee is set to the correct amount.
   console.log("Building transaction...");
   let totalFee = 0n;
   while (true) {
@@ -150,8 +123,6 @@ async function build_transaction(
       }
     );
 
-    // Sign the transaction. In this case, we only care about the size
-    // of the signed transaction, so we use a mock signer here for efficiency.
     const signedTransaction = await sign_transaction(
       ownPublicKey,
       ownAddress,
@@ -179,13 +150,7 @@ function build_transaction_with_fee(
   amount: nat64,
   fee: nat64
 ): Result<BitcoinTransaction, string> {
-  // Assume that any amount below this threshold is dust.
   const DUST_THRESHOLD: nat64 = 1_000n;
-
-  // Select which UTXOs to spend. We naively spend the oldest available UTXOs,
-  // even if they were previously spent in a transaction. This isn't a
-  // problem as long as at most one transaction is created per block and
-  // we're using min_confirmations of 1.
   let utxosToSpend: Vec<Utxo> = [];
   let totalSpent = 0n;
   for (const utxo of [...ownUtxos].reverse()) {
@@ -228,13 +193,6 @@ function build_transaction_with_fee(
   return Result.Ok(BitcoinTransaction.new(inputs, 0, 1, outputs));
 }
 
-// Sign a bitcoin transaction.
-//
-// IMPORTANT: This method is for demonstration purposes only and it only
-// supports signing transactions if:
-//
-// 1. All the inputs are referencing outpoints that are owned by `own_address`.
-// 2. `own_address` is a P2PKH address.
 async function sign_transaction(
   ownPublicKey: blob,
   ownAddress: BitcoinAddress,

@@ -63,15 +63,9 @@ async function calculate_p2pkh_address_estimate_fee(
   // Get fee percentiles from previous transactions to estimate our own fee.
   const feePercentiles = await bitcoinApi.get_current_fees_percentiles(NETWORK);
 
-  const feePerByte =
-    feePercentiles.length === 0
-      ? // There are no fee percentiles. This case can only happen on a regtest
-        // network where there are no non-coinbase transactions. In this case,
-        // we use a default of 2000 millisatoshis/byte (i.e. 2 satoshi/byte)
-        2_000n
-      : // Choose the 50th percentile for sending fees.
-        feePercentiles[49];
+  const feePerByte = feePercentiles.length === 0 ? 2_000n : feePercentiles[49];
 
+  // constants used for P2PKH Adresses
   // Input size (one UTXO): 148 bytes
   // Output size (one output): 34 bytes
   // Transaction header size: 8 bytes
@@ -103,12 +97,6 @@ export function get_bitcoin_network(): BitcoinNetwork {
 }
 //---------------------------------------------------Update Methods---------------------------------------------------------
 
-// Returns the balance of the given bitcoin address.
-$update;
-export async function get_balance(address: string): Promise<nat64> {
-  return await bitcoinApi.get_balance(NETWORK, address);
-}
-
 // Returns the balance of the given will identifier
 $update;
 export async function get_balance_by_identifier(
@@ -121,21 +109,6 @@ export async function get_balance_by_identifier(
   const balance = await bitcoinApi.get_balance(NETWORK, address);
 
   return balance;
-}
-
-/// Returns the UTXOs of the given bitcoin address.
-$update;
-export async function get_utxos(address: string): Promise<GetUtxosResult> {
-  return await bitcoinApi.get_utxos(NETWORK, address);
-}
-
-// Returns the 100 fee percentiles measured in millisatoshi/byte.
-// Percentiles are computed from the last 10,000 transactions (if available).
-$update;
-export async function get_current_fees_percentiles(): Promise<
-  Vec<MillisatoshiPerByte>
-> {
-  return await bitcoinApi.get_current_fees_percentiles(NETWORK);
 }
 
 /// Returns the P2PKH address of this canister at a specific derivation path.
@@ -185,13 +158,11 @@ export async function bitcoin_transfer(
 
     const expectedAmount = srcAddressBalance - estimatedFee;
 
-    // return transaction hash if it successfull
     const txId = await bitcoinWallet.bitcoin_transfer(
       NETWORK,
       [getIdentifierBlob(request.identifier)],
       KEY_NAME,
       request.destinationAddress,
-      // request.amountInSatoshi
       expectedAmount
     );
 

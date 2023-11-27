@@ -14,6 +14,11 @@ WILL_CANISTER_ID=arvss-hyaaa-aaaam-abt5q-cai dfx deploy --network ic icrc
 cd canisters/bitcoin || true
 
 # Bitcoin Canister
-WILL_CANISTER_ID=arvss-hyaaa-aaaam-abt5q-cai dfx deploy --network ic bitcoin_canister --argument='(variant { Testnet })'
+ 
+# For Bitcoin Testnet
+# WILL_CANISTER_ID=arvss-hyaaa-aaaam-abt5q-cai dfx deploy --network ic bitcoin_canister --argument='(variant { Testnet })'
+
+# For Bitcoin Mainnet
+WILL_CANISTER_ID=arvss-hyaaa-aaaam-abt5q-cai dfx deploy --network ic bitcoin_canister --argument='(variant { Mainnet })'
 
 cd ../..
