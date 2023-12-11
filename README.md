@@ -7,12 +7,11 @@
 InheritX is a blockchain-based application developed on <b>Internet Computer (ICP) </b> that allows users to create a digital will and bequeath their assets to designated beneficiaries in the event of their death.
 </i>
 
-<br>
-Assets currently supported by InheritX are:
+#### Assets currently supported by InheritX
 
-- $BTC
-- $ICP
-- $ckBTC
+- Bitcoin (BTC)
+- ck-Bitcoin (ckBTC)
+- Internet Computer Protocol (ICP)
 
 ### NOTE
 
