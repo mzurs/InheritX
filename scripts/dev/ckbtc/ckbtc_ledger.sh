@@ -9,7 +9,7 @@ if [ -f "$file_name" ]; then
 else
     echo "The file $file_name does not exist in the current directory."
 
-    export IC_VERSION=d87954601e4b22972899e9957e800406a0a6b929
+    export IC_VERSION=206a50f01306b398eb7e25988c7925fcd0e2caa4
     curl -o ckbtc_ledger.wasm.gz "https://download.dfinity.systems/ic/$IC_VERSION/canisters/ic-icrc1-ledger.wasm.gz"
     curl -o ckbtc_ledger.did "https://raw.githubusercontent.com/dfinity/ic/$IC_VERSION/rs/rosetta-api/icrc1/ledger/ledger.did"
     gunzip ckbtc_ledger.wasm.gz
