@@ -1,11 +1,9 @@
 import {
-  blob,
   $init,
   match,
   nat64,
   $postUpgrade,
   $update,
-  Vec,
   $query,
   nat32,
   ic,
@@ -13,8 +11,6 @@ import {
 } from "azle";
 import {
   BitcoinNetwork,
-  GetUtxosResult,
-  MillisatoshiPerByte,
 } from "azle/canisters/management";
 
 import * as bitcoinApi from "./apis";
@@ -98,7 +94,7 @@ export function get_bitcoin_network(): BitcoinNetwork {
 //---------------------------------------------------Update Methods---------------------------------------------------------
 
 // Returns the balance of the given will identifier
-$update;
+$query;
 export async function get_balance_by_identifier(
   identifier: nat32
 ): Promise<nat64> {
@@ -112,7 +108,7 @@ export async function get_balance_by_identifier(
 }
 
 /// Returns the P2PKH address of this canister at a specific derivation path.
-$update;
+$query;
 export async function get_p2pkh_address(identifier: nat32): Promise<string> {
   return await bitcoinWallet.get_p2pkh_address(NETWORK, KEY_NAME, [
     getIdentifierBlob(identifier),
