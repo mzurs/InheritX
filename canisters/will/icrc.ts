@@ -1,4 +1,4 @@
-import { ic, nat32, Opt, match, Principal } from "azle";
+import { ic, match, Principal } from "azle";
 import {
   ICRCCreateWillArgs,
   ICRCs,

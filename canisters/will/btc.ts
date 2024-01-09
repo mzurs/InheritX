@@ -1,4 +1,4 @@
-import { $query, $update, Opt, Principal, ic, match, nat64 } from "azle";
+import { Opt, Principal, ic, match } from "azle";
 import { Bitcoin } from "../../services/bitcoin";
 import {
   add_identifier_to_mapping,
@@ -23,14 +23,6 @@ export const BITCOIN_CANISTER_ID = Principal.fromText(
 const btc = new Bitcoin(BITCOIN_CANISTER_ID);
 
 //--------------------------------------------------Update Methods------------------------------------------------------
-// $update;
-// export async function bitcoin_get_balance(address: string): Promise<nat64> {
-//   const balance = await btc.getBalance(address).call();
-//   return match(balance, {
-//     Ok: (res) => res,
-//     Err: (err) => ic.trap(err),
-//   });
-// }
 
 //  create a will for btc supported assets
 export async function btc_create_will(

@@ -1,8 +1,5 @@
 import {
   Principal,
-  $init,
-  $preUpgrade,
-  $postUpgrade,
   $query,
   ic,
   blob,
@@ -11,7 +8,6 @@ import {
   match,
   Tuple,
   Vec,
-  $update,
 } from "azle";
 import { ICRC } from "azle/canisters/icrc";
 import {

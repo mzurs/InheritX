@@ -1,4 +1,4 @@
-import { Principal, $update, ic, match, $query, Result } from "azle";
+import { Principal, $update, ic, match, $query } from "azle";
 import {
   userDetailsArgs,
   AddUserDetails,

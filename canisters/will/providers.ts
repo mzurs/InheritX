@@ -1,4 +1,4 @@
-import { $query, $update, Principal, match, nat32 } from "azle";
+import { $update, Principal, match, nat32 } from "azle";
 import { Provider } from "../../services/providers";
 import { CheckDeathByIdentifier, ReportDeathByBase64Id } from "./utils/types";
 import { users, wills } from "./will";

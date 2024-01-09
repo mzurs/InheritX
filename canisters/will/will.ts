@@ -20,7 +20,6 @@ import {
   CreateWillArgs,
   ClaimWill,
   DeleteWill,
-  ClaimDeathOfTestatorByBase64ID,
   ICRCCreateWillArgs,
   BTCCreateWillArgs,
   BTCDeleteWill,

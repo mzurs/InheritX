@@ -2,7 +2,6 @@ import { $query, nat, match, ic, $update, nat32, Principal, Opt } from "azle";
 import { ICRC1Account, ICRC1TransferArgs } from "azle/canisters/icrc";
 import { ckbtcLedger, getIdentifierBlob } from "../../icrc";
 import { ICRCCKBTCTRANSFER } from "../../utils/types";
-import { binaryAddressFromPrincipal } from "azle/canisters/ledger";
 
 //==============================================CKBTC Ledger METHODS===============================================
 

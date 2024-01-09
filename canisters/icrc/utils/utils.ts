@@ -1,4 +1,4 @@
-import { $query, $update, ic, nat } from "azle";
+import { $query, ic, nat } from "azle";
 
 
 $query;

@@ -1,4 +1,4 @@
-import { $query, $update, ic, nat64 } from "azle";
+import { $query, ic, nat64 } from "azle";
 
 $query;
 export function get_icrc_canister_id(): string {
