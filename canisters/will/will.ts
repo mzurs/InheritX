@@ -50,7 +50,6 @@ import { btc_claim_will, btc_create_will, btc_delete_will } from "./btc";
 //Store user details before creating any will
 export let users = new StableBTreeMap<Principal, UserDetails>(1, 38, 500_000);
 
-users.items();
 // Store digital will inside StableMemory with unique will_identifier
 export let wills = new StableBTreeMap<nat32, Will>(2, 38, 500_000);
 
@@ -89,16 +88,17 @@ $query;
 export function get_willsT(): Vec<number> {
   return match(testatorMappingToWillIdentifier.get(ic.caller()), {
     Some: (wills) => wills,
-    None: (none) => [],
+    None: (_none) => [],
   });
 }
 $query;
 export function get_willsC(): Vec<number> {
   return match(heirsMappingToWillIdentifier.get(ic.caller()), {
     Some: (wills) => wills,
-    None: (none) => [],
+    None: (_none) => [],
   });
 }
+
 // add will identifier to testators and heirs mappings
 $update;
 export function add_identifier_to_mapping(
@@ -106,9 +106,6 @@ export function add_identifier_to_mapping(
   heirs: Principal,
   identifier: nat32
 ): void {
-  // if (testatorMappingToWillIdentifier.isEmpty()) {
-  //   testatorMappingToWillIdentifier.insert(testator, [identifier]);
-  // } else {
   const identifiersT = testatorMappingToWillIdentifier.get(testator);
   console.log("🚀 ~ file: will.ts:89 ~ identifiersT:", identifiersT);
   match(identifiersT, {
@@ -116,13 +113,10 @@ export function add_identifier_to_mapping(
       const updatedVec = [...identifiers, identifier];
       testatorMappingToWillIdentifier.insert(testator, updatedVec);
     },
-    None: (none) =>
+    None: (_none) =>
       testatorMappingToWillIdentifier.insert(testator, [identifier]),
   });
-  // }
-  // if (heirsMappingToWillIdentifier.isEmpty()) {
-  //   heirsMappingToWillIdentifier.insert(heirs, [identifier]);
-  // } else {
+
   const identifiersH = heirsMappingToWillIdentifier.get(heirs);
   console.log("🚀 ~ file: will.ts:103 ~ identifiersH:", identifiersH);
   match(identifiersH, {
@@ -130,9 +124,8 @@ export function add_identifier_to_mapping(
       const updatedVec = [...identifiers, identifier];
       heirsMappingToWillIdentifier.insert(heirs, updatedVec);
     },
-    None: (none) => heirsMappingToWillIdentifier.insert(heirs, [identifier]),
+    None: (_none) => heirsMappingToWillIdentifier.insert(heirs, [identifier]),
   });
-  // }
   return;
 }
 
@@ -549,6 +542,7 @@ export async function claim_will(
   }
 }
 //===================================================EXPORTS==================================================
+
 export {
   //icrc
   get_icrc_canister_id,
